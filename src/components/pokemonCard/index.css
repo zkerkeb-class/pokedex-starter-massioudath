@@ -1,0 +1,101 @@
+.pokemon-card {
+  border: 1px solid red;
+  padding: 10px;
+  margin: 10px;
+  border-radius: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: orange; /* Le fond est orange */
+  width: 150px;  /* Ajustement de la largeur pour un affichage plus compact */
+  height: auto;  /* Ajustement automatique pour s'adapter au contenu */
+}
+
+.pokemon-name {
+  font-size: 16px; 
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.pokemon-image-container {
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.pokemon-image {
+  max-height: 120px;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.pokemon-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;  /* Alignement au centre */
+  font-size: 12px;
+  color: #333;
+  background-color: yellow;  /* Fond jaune pour la section des informations */
+  padding: 10px;
+  width: 100%;  /* Utilise toute la largeur disponible */
+  box-sizing: border-box;  /* S'assurer que les informations restent dans le cadre */
+}
+
+.pokemon-info ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.pokemon-info li {
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.pokemon-types-container {
+  background-color: blue;
+  display: flex;
+}
+
+.pokemon-types-container > *:not(:first-child) {
+  margin-left: 10px;
+}
+
+.pokemon-stats-container {
+  background-color: green;
+  display: flex;
+  flex-direction: column;
+}
+
+.pokemon-actions {
+  position: relative;
+}
+
+.pokemon-menu {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  padding: 10px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  z-index: 10;
+}
+
+.pokemon-menu button {
+  display: block;
+  width: 100%;
+  padding: 5px;
+  margin: 5px 0;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.pokemon-menu button:hover {
+  background-color: #0056b3;
+}
