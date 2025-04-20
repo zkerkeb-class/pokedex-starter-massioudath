@@ -69,6 +69,8 @@ function App() {
         <Route path="/create" element={<CreatePokemon />} /> {/* Formulaire de création */}
         <Route path="/edit/:id" element={<EditPokemon />} /> {/* Formulaire d’édition */}
         
+        
+        
       </Routes>
     </Router>
   );

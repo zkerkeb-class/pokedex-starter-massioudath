@@ -1,68 +1,96 @@
-import { useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { getPokemonById, updatePokemon } from "../../services/api";
+import "./index.css";
 
 function EditPokemon() {
-  const { id } = useParams();  // Récupérer l'ID du Pokémon à partir de l'URL
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [pokemon, setPokemon] = useState(null);
-  const [formData, setFormData] = useState({
-    name: '',
-    type: '',
-    sprite: ''
-  });
+  const [formData, setFormData] = useState({ name: "", type: "", image: "" });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [mongoId, setMongoId] = useState("");
 
   useEffect(() => {
-    // Charger le Pokémon à partir de l'ID
-    axios.get(`http://localhost:3000/pokemons/${id}`)
-      .then(response => {
-        const pokemonData = response.data;
-        setPokemon(pokemonData);
+    async function fetchData() {
+      try {
+        const data = await getPokemonById(id);
+        setMongoId(data._id);
+
+        setPokemon(data);
         setFormData({
-          name: pokemonData.name.french,
-          type: pokemonData.type.join(', '),
-          sprite: pokemonData.image
+          name: data.name.french,
+          type: data.type.join(', '), // utilise bien les données de la BDD
+          image: data.image
         });
-      })
-      .catch(error => {
-        console.error("Erreur lors de la récupération du Pokémon", error);
-      });
+      } catch (err) {
+        setError("Erreur lors de la récupération du Pokémon");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchData();
   }, [id]);
+  
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-
-  const handleEdit = async (e) => {
+  
+  const handleSubmit = async (e) => { 
     e.preventDefault();
-
-    const { name, type, sprite } = formData;
+    
+    // Création d'un nouvel objet pour ne pas modifier l'original
     const updatedPokemon = {
-      name: { french: name },
-      type: type.split(',').map(t => t.trim()), // Assurer que type est un tableau
-      image: sprite
+      ...pokemon,
+      name: {
+        ...pokemon.name,
+        french: formData.name,
+        english: formData.name
+      },
+      type: formData.type
+        .split(',')
+        .map(t => t.trim())
+        .filter(t => t !== ""), // ✅ corrige l'erreur mongoose
+      image: formData.image,
+      stats: pokemon.stats, // obligatoire pour éviter les erreurs de validation
+      evolutions: pokemon.evolutions || []
     };
+    
+    
+    
+    
+    // Supprime les propriétés qui pourraient causer des problèmes
+    delete updatedPokemon.__v;  // Supprime la version de mongoose si elle existe
+    
+    console.log("Données envoyées au serveur:", mongoId, updatedPokemon);
 
     try {
-      // Effectuer la requête PUT avec l'ID du Pokémon
-      const response = await axios.put(`http://localhost:3000/pokemons/edit/${id}`, updatedPokemon);
-      if (response.status === 200) {
-        alert("✅ Pokémon modifié avec succès !");
-        // Rediriger ou mettre à jour la liste des Pokémon selon ton besoin
-      }
+      await updatePokemon(mongoId, updatedPokemon);
+      alert("✅ Pokémon mis à jour avec succès !");
+      navigate("/", { replace: true });
+
+
     } catch (error) {
-      console.error("Erreur lors de la mise à jour du Pokémon", error);
-      alert("❌ Échec de la modification");
+      console.error("Erreur lors de la modification", error);
+      if (error.response && error.response.data) {
+        console.log("Message d'erreur du serveur:", error.response.data);
+      }
+      alert("❌ Erreur lors de la mise à jour du Pokémon");
     }
   };
 
-  if (!pokemon) {
-    return <p>Chargement du Pokémon...</p>;
-  }
+  if (loading) return <p>Chargement...</p>;
+  if (error) return <p>{error}</p>;
+  if (!pokemon) return <p>Pokémon non trouvé</p>;
 
   return (
-    <div>
-      <h2>Modifier le Pokémon</h2>
-      <form onSubmit={handleEdit}>
+    <div className="edit-pokemon">
+      <h1>Modifier {pokemon.name.french}</h1>
+      <form onSubmit={handleSubmit}>
         <label>Nom :</label>
         <input
           type="text"
@@ -71,6 +99,7 @@ function EditPokemon() {
           onChange={handleChange}
           required
         />
+
         <label>Type :</label>
         <input
           type="text"
@@ -79,14 +108,16 @@ function EditPokemon() {
           onChange={handleChange}
           required
         />
-        <label>Image URL :</label>
+
+        <label>Image :</label>
         <input
           type="text"
-          name="sprite"
-          value={formData.sprite}
+          name="image"
+          value={formData.image}
           onChange={handleChange}
           required
         />
+
         <button type="submit">Mettre à jour</button>
       </form>
     </div>

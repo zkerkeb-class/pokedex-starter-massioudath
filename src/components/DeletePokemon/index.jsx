@@ -18,19 +18,21 @@ function PokemonList() {
   }, []);
 
   // Fonction de suppression
-  const handleDelete = async (pokemonId, name) => {
-    const confirmDelete = window.confirm(`Supprimer ${name} ?`);
-    if (!confirmDelete) return;
+ // Fonction de suppression
+const handleDelete = async (mongoId, name) => {
+  const confirmDelete = window.confirm(`Supprimer ${name} ?`);
+  if (!confirmDelete) return;
 
-    try {
-      await deletePokemon(pokemonId); // Supprimer le Pokémon via l'API
-      alert("✅ Pokémon supprimé !");
-      setPokemons((prev) => prev.filter((p) => p.id !== pokemonId)); // Met à jour la liste
-    } catch (err) {
-      console.error("Erreur lors de la suppression :", err);
-      alert("❌ Échec de la suppression");
-    }
-  };
+  try {
+    await deletePokemon(mongoId); // Utilise bien l'ID MongoDB
+    alert("✅ Pokémon supprimé !");
+    setPokemons((prev) => prev.filter((p) => p._id !== mongoId)); // Filtre avec _id
+  } catch (err) {
+    console.error("Erreur lors de la suppression :", err);
+    alert("❌ Échec de la suppression");
+  }
+};
+
 
   return (
     <div>

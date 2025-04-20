@@ -19,13 +19,13 @@ export const getAllPokemons = async (page = 1, limit = 10) => {
 export const getPokemonById = async (id) => {
   try {
     const response = await api.get(`/${id}`);
-    return response.data;
+    return response.data.pokemon; // ✅ ici on extrait directement le Pokémon
   } catch (error) {
     console.error(`Erreur lors de la récupération du Pokémon avec l'ID ${id}`, error);
-    throw error;  // Lance une erreur pour pouvoir la gérer côté appelant
+    throw error;
   }
 };
-
+ 
 // Créer un nouveau Pokémon
 export const createPokemon = async (data) => {
   try {
@@ -38,14 +38,17 @@ export const createPokemon = async (data) => {
 };
 
 // Mettre à jour un Pokémon existant
+
 export const updatePokemon = async (id, data) => {
   try {
-    const response = await api.put(`/${id}`, data);
-    console.log('Réponse de la mise à jour du Pokémon:', response);  // Log de la réponse
+    const response = await api.put(`/${id}`, data); // ✅ PAS de "pokemon: data"
     return response.data;
   } catch (error) {
     console.error(`Erreur lors de la mise à jour du Pokémon avec l'ID ${id}`, error);
-    throw error;  // Lance une erreur pour pouvoir la gérer côté appelant
+    if (error.response && error.response.data) {
+      console.log("Message d'erreur du serveur:", error.response.data);
+    }
+    throw error;
   }
 };
 

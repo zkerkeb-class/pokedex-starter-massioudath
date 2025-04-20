@@ -1,9 +1,13 @@
+// HomePage.jsx corrigé avec interaction par double clic uniquement
 import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { getAllPokemons, deletePokemon, updatePokemon } from "../../services/api";
 import SearchBar from "../SearchBar";
 import PokemonCard from "../pokemonCard";
+import CreatePokemon from "../CreatePokemon";
+import Select from "react-select"; 
+import FlippablePokemonCard from "../FlippablePokemonCard";
 import "./index.css";
-import axios from 'axios';
 
 function HomePage() {
   const [pokemons, setPokemons] = useState([]);
@@ -12,37 +16,52 @@ function HomePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [modalAction, setModalAction] = useState(null);
-  const [selectedPokemon, setSelectedPokemon] = useState(null);
   const [formData, setFormData] = useState({ name: "", type: "", sprite: "" });
   const [successMessage, setSuccessMessage] = useState("");
+  const [selectedPokemon, setSelectedPokemon] = useState(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editForm, setEditForm] = useState({ name: "", type: "", image: "" });
+  const [editingPokemon, setEditingPokemon] = useState(null);
+  const [successModalMessage, setSuccessModalMessage] = useState("");
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [pokemonToDelete, setPokemonToDelete] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
-  // Récupération des Pokémon
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const POKEMON_TYPES = [
+    { label: "Feu", value: "Fire" }, { label: "Eau", value: "Water" }, { label: "Plante", value: "Grass" },
+    { label: "Électrik", value: "Electric" }, { label: "Sol", value: "Ground" }, { label: "Roche", value: "Rock" },
+    { label: "Vol", value: "Flying" }, { label: "Insecte", value: "Bug" }, { label: "Poison", value: "Poison" },
+    { label: "Spectre", value: "Ghost" }, { label: "Acier", value: "Steel" }, { label: "Dragon", value: "Dragon" },
+    { label: "Ténèbres", value: "Dark" }, { label: "Psy", value: "Psychic" }, { label: "Combat", value: "Fighting" },
+    { label: "Glace", value: "Ice" }, { label: "Fée", value: "Fairy" }, { label: "Normal", value: "Normal" },
+  ];
+
   useEffect(() => {
     async function fetchData() {
       let allPokemons = [];
       let currentPage = 1;
       let totalPages = 1;
-
       try {
         while (currentPage <= totalPages) {
           const data = await getAllPokemons(currentPage);
-          if (data && data.pokemons && Array.isArray(data.pokemons)) {
+          if (data?.pokemons?.length) {
             allPokemons = allPokemons.concat(data.pokemons);
             totalPages = data.totalPages;
           }
-          currentPage += 1;
+          currentPage++;
         }
         setPokemons(allPokemons);
       } catch (error) {
-        console.error("Erreur lors du chargement des Pokémon", error);
         setError("Erreur lors du chargement des Pokémon");
       } finally {
         setLoading(false);
       }
     }
     fetchData();
-  }, []);
+  }, [location]);
 
   const handleSearch = (searchTerm, typeFilters) => {
     setSearch(searchTerm);
@@ -50,173 +69,175 @@ function HomePage() {
   };
 
   const filteredPokemons = pokemons.filter((pokemon) => {
-    const matchesSearch = pokemon.name?.french
-      ?.toLowerCase()
-      .includes(search.toLowerCase());
-    const matchesType =
-      selectedTypes.length === 0 || selectedTypes.some((type) => pokemon.type.includes(type));
+    const matchesSearch = pokemon.name?.french?.toLowerCase().includes(search.toLowerCase());
+    const matchesType = selectedTypes.length === 0 || selectedTypes.some((type) => pokemon.type.includes(type));
     return matchesSearch && matchesType;
   });
 
-  // Ouvre la modale pour modifier ou supprimer
-  const openModal = (pokemon) => {
-    setSelectedPokemon(pokemon);
-    setFormData({
-      name: pokemon.name.french,
-      type: pokemon.type.join(", "),
-      sprite: pokemon.image,
-    });
-    setShowModal(true);
-  };
-
-  // Ferme la modale
-  const closeModal = () => {
-    setShowModal(false);
-    setModalAction(null);
-    setSelectedPokemon(null);
-    setSuccessMessage(""); // Réinitialiser le message de succès
-  };
-
-  // Gère la suppression
-  const handleDelete = async () => {
-    if (window.confirm(`Êtes-vous sûr de vouloir supprimer ${selectedPokemon.name.french} ?`)) {
-      try {
-        await deletePokemon(selectedPokemon.id);
-        setPokemons((prev) => prev.filter((p) => p.id !== selectedPokemon.id));
-        alert("✅ Pokémon supprimé avec succès !");
-        closeModal();
-      } catch (error) {
-        console.error("Erreur lors de la suppression du Pokémon", error);
-        alert("❌ Échec de la suppression");
-      }
-    }
-  };
-
-  // Gère la modification
-  const handleEdit = async (e) => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
-    const { name, type, sprite } = formData;
-    const updatedPokemon = {
-      id: selectedPokemon.id,  // L'ID du Pokémon
-      name: { french: name },
-      type: type.split(",").map(t => t.trim()), 
-      image: sprite,
+    const updatedData = {
+      ...editingPokemon,
+      name: { ...editingPokemon.name, french: editForm.name, english: editForm.name },
+      type: Array.isArray(editForm.type) ? editForm.type : editForm.type.split(",").map((t) => t.trim()),
+      image: editForm.image,
+      stats: editingPokemon.stats,
     };
-  
-    console.log(`ID du Pokémon à modifier : ${selectedPokemon.id}`);  // Vérifie l'ID dans les logs
-  
+    delete updatedData.__v;
     try {
-      // Effectue la requête PUT à l'API
-      const response = await axios.put(`http://localhost:3000/pokemons/${selectedPokemon.id}`, updatedPokemon);
-  
-      if (response.status === 200) {
-        console.log('Réponse de la mise à jour:', response);
-        setPokemons((prev) => prev.map((p) => (p.id === updatedPokemon.id ? updatedPokemon : p)));
-        alert("✅ Pokémon modifié avec succès !");
-        closeModal();
-      } else {
-        throw new Error('Échec de la mise à jour');
-      }
+      await updatePokemon(editingPokemon._id, updatedData);
+      setSuccessModalMessage("✅ Pokémon mis à jour !");
+      setShowSuccessModal(true);
+      setPokemons((prev) => prev.map((p) => (p._id === editingPokemon._id ? updatedData : p)));
+      setEditModalOpen(false);
+      setEditingPokemon(null);
     } catch (error) {
-      console.error("Erreur lors de la mise à jour du Pokémon", error);
-      alert("❌ Échec de la modification");
+      alert("Erreur lors de la mise à jour.");
     }
   };
-  
-  
-  
 
-  // Gère les changements dans les champs du formulaire
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleDelete = async (mongoId, name) => {
+    try {
+      await deletePokemon(mongoId);
+      setPokemons((prev) => prev.filter((p) => p._id !== mongoId));
+      setSuccessModalMessage(`✅ ${name} supprimé avec succès !`);
+      setShowSuccessModal(true);
+    } catch (error) {
+      alert("❌ Échec de la suppression");
+    }
   };
 
-  if (loading) return <p>Chargement des Pokémon...</p>;
-  if (error) return <p>{error}</p>;
-
+  const closeSuccessModal = () => {
+    setShowSuccessModal(false);
+    setSuccessModalMessage("");
+  };
+   
   return (
     <div className="home-container">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
         <SearchBar onSearch={handleSearch} />
-        <button onClick={() => openModal(null)} className="create-button">Créer un Pokémon</button>
+        <button onClick={() => setShowModal(true)} className="create-button">Créer un Pokémon</button>
       </div>
 
-      <div className="pokemon-list" style={{ overflowY: "scroll", maxHeight: "80vh" }}>
-        {filteredPokemons.length === 0 ? (
-          <p>Aucun Pokémon trouvé.</p>
-        ) : (
-          filteredPokemons.map((pokemon) => (
-            <div key={pokemon.id} className="pokemon-card-container" onClick={() => openModal(pokemon)}>
-              <PokemonCard
-                name={pokemon.name}
-                tabDeTypes={pokemon.type}
-                image={pokemon.image}
-                attack={pokemon.base?.Attack}
-                defense={pokemon.base?.Defense}
-                hp={pokemon.base?.HP}
-              />
-            </div>
-          ))
-        )}
+      {successMessage && <div className="success-message">{successMessage}</div>}
+
+      <div className="pokemon-list" >
+        {filteredPokemons.map((pokemon) => (
+          <FlippablePokemonCard
+            key={pokemon._id}
+            pokemon={pokemon}
+            onChooseAction={(p) => setSelectedPokemon(p)}
+          />
+        ))}
       </div>
 
-      {/* Modal pour modifier ou supprimer */}
-      {showModal && selectedPokemon && modalAction === null && (
+      {showModal && (
+        <CreatePokemon
+          onClose={() => setShowModal(false)}
+          onCreated={(newPokemon) => setPokemons((prev) => [newPokemon, ...prev])}
+        />
+      )}
+
+      {selectedPokemon && (
         <div className="modal-overlay">
           <div className="modal">
-            <img src={selectedPokemon.image} alt={selectedPokemon.name.french} style={{ width: '100px', height: '100px', marginBottom: '20px' }} />
             <h2>Que voulez-vous faire avec {selectedPokemon.name.french} ?</h2>
-            <div className="modal-buttons">
-              <button onClick={() => setModalAction('edit')} className="modal-btn edit-btn">Modifier</button>
-              <button onClick={() => setModalAction('delete')} className="modal-btn delete-btn">Supprimer</button>
-              <button onClick={closeModal} className="modal-btn close-btn">Fermer</button>
+            <img src={selectedPokemon.image} alt={selectedPokemon.name.french} width="150" />
+            <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
+              <button
+                onClick={() => {
+                  setEditingPokemon(selectedPokemon);
+                  setEditForm({
+                    name: selectedPokemon.name.french,
+                    type: selectedPokemon.type.join(", "),
+                    image: selectedPokemon.image,
+                  });
+                  setEditModalOpen(true);
+                  setSelectedPokemon(null);
+                }}
+                style={{ backgroundColor: "gold", padding: "0.5rem", flex: 1 }}
+              >Modifier</button>
+              <button
+                onClick={() => {
+                  setPokemonToDelete(selectedPokemon);
+                  setShowDeleteModal(true);
+                  setSelectedPokemon(null);
+                }}
+                style={{ backgroundColor: "crimson", color: "white", padding: "0.5rem", flex: 1 }}
+              >Supprimer</button>
+              <button
+                onClick={() => setSelectedPokemon(null)}
+                style={{ backgroundColor: "#ccc", padding: "0.5rem", flex: 1 }}
+              >Annuler</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Modal de modification */}
-      {showModal && modalAction === 'edit' && selectedPokemon && (
+      {editModalOpen && (
         <div className="modal-overlay">
           <div className="modal">
-            <img src={selectedPokemon.image} alt={selectedPokemon.name.french} style={{ width: '100px', height: '100px', marginBottom: '20px' }} />
-            <h1>Modifier le Pokémon</h1>
-            <form onSubmit={handleEdit}>
-              <label>Nom :</label>
-              <input type="text" name="name" value={formData.name} onChange={handleChange} required />
-              <label>Type :</label>
-              <input type="text" name="type" value={formData.type} onChange={handleChange} required />
-              <label>Image URL :</label>
-              <input type="text" name="sprite" value={formData.sprite} onChange={handleChange} required />
-              <div className="modal-buttons">
-                <button type="submit" className="modal-btn edit-btn">Mettre à jour</button>
-                <button type="button" onClick={closeModal} className="modal-btn close-btn">Fermer</button>
+            <h2>Modifier {editForm.name}</h2>
+            <img src={editForm.image} alt={editForm.name} width="150" />
+            <form onSubmit={handleUpdate} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              <input type="text" name="name" value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} required />
+              <Select
+                isMulti
+                name="type"
+                options={POKEMON_TYPES}
+                value={POKEMON_TYPES.filter(option => editForm.type.includes(option.value))}
+                onChange={(selected) => setEditForm({ ...editForm, type: selected.map(o => o.value) })}
+              />
+              <input type="text" name="image" value={editForm.image} onChange={e => setEditForm({ ...editForm, image: e.target.value })} required />
+              <div style={{ display: "flex", gap: "1rem" }}>
+                <button type="submit" style={{ backgroundColor: "gold", flex: 1 }}>Mettre à jour</button>
+                <button type="button" onClick={() => setEditModalOpen(false)} style={{ flex: 1 }}>Annuler</button>
               </div>
             </form>
           </div>
         </div>
       )}
 
-      {/* Modal de confirmation de suppression */}
-      {showModal && modalAction === 'delete' && selectedPokemon && (
+      {showDeleteModal && (
         <div className="modal-overlay">
           <div className="modal">
-            <img src={selectedPokemon.image} alt={selectedPokemon.name.french} style={{ width: '100px', height: '100px', marginBottom: '20px' }} />
-            <h2>Êtes-vous sûr de vouloir supprimer {selectedPokemon.name.french} ?</h2>
-            <div className="modal-buttons">
-              <button onClick={handleDelete} className="modal-btn delete-btn">Supprimer</button>
-              <button onClick={closeModal} className="modal-btn close-btn">Annuler</button>
+            <h2>Supprimer {pokemonToDelete.name.french} ?</h2>
+            <img src={pokemonToDelete.image} alt={pokemonToDelete.name.french} width="150" />
+            <p style={{ marginTop: "1rem" }}>Cette action est irréversible.</p>
+            <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
+              <button
+                onClick={() => handleDelete(pokemonToDelete._id, pokemonToDelete.name.french)}
+                style={{ backgroundColor: "crimson", color: "white", flex: 1 }}
+              >Supprimer</button>
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                style={{ backgroundColor: "#ccc", flex: 1 }}
+              >Annuler</button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Affichage du message de succès */}
-      {successMessage && (
-        <div className="success-message">
-          {successMessage}
+      {successModalMessage && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2 className="success-modal">{successModalMessage}</h2>
+            <button onClick={() => setShowSuccessModal(false)} className="success-button">Fermer</button>
+          </div>
         </div>
       )}
+
+{showSuccessModal && (
+  <div className="modal-overlay">
+    <div className="modal">
+      <h2 className="success-modal">{successModalMessage}</h2>
+      <button onClick={closeSuccessModal} className="success-button">
+        Fermer
+      </button>
+    </div>
+  </div>
+)}
+
     </div>
   );
 }

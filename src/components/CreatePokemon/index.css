@@ -63,4 +63,21 @@
   .update-button:hover {
     background-color: #1565c0;
   }
+  .react-select__control {
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    min-height: 40px;
+  }
+  
+  .react-select__menu {
+    z-index: 9999;
+  }
+  
+  .react-select__multi-value {
+    background-color: #e0f7fa;
+    color: #00796b;
+    border-radius: 4px;
+    padding: 2px 4px;
+  }
+  
   
