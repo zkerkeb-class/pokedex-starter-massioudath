@@ -2,23 +2,31 @@ import { useState } from "react";
 import "./index.css";
 import PokemonCard from "../pokemonCard";
 
-function FlippablePokemonCard({ pokemon, onChooseAction }) {
+function FlippablePokemonCard({ pokemon, onChooseAction, foundPokemons }) {
   const [flipped, setFlipped] = useState(false);
   const [actionReady, setActionReady] = useState(false);
 
   const handleClick = () => {
     if (!flipped) {
       setFlipped(true);
-      setActionReady(true); // Prépare le prochain clic
+      setActionReady(true);
+      
+      // Premier clic: ajouter à foundPokemons sans ouvrir le modal
+      onChooseAction(pokemon, false);
     } else if (actionReady) {
-      setActionReady(false); // évite double clic
-      onChooseAction(pokemon); // Appel du modal
+      setActionReady(false);
+      
+      // Deuxième clic: ouvrir le modal
+      onChooseAction(pokemon, true);
     }
   };
 
   return (
     <div className="flippable-card" onClick={handleClick}>
       <div className={`flippable-card-inner ${flipped ? "flipped" : ""}`}>
+        {foundPokemons.includes(pokemon._id) && (
+          <div className="sparkle-effect"></div>
+        )}
         <div className="card-front">
           <p style={{ fontWeight: "bold", fontSize: "18px", color: "crimson" }}>
             ❓ Cliquer pour révéler
@@ -38,5 +46,4 @@ function FlippablePokemonCard({ pokemon, onChooseAction }) {
     </div>
   );
 }
-
 export default FlippablePokemonCard;

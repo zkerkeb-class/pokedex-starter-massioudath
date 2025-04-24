@@ -53,3 +53,30 @@
     justify-content: center;
     padding: 1rem;
   }
+
+  .sparkle-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background-image: radial-gradient(white 1px, transparent 1px),
+                      radial-gradient(#fff176 1px, transparent 1px);
+    background-size: 10px 10px;
+    animation: sparkle 1s ease-out;
+    z-index: 10;
+    border-radius: 12px;
+  }
+  
+  @keyframes sparkle {
+    0% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(2);
+    }
+  }
+  

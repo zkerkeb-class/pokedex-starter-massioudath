@@ -9,6 +9,8 @@ import Select from "react-select";
 import FlippablePokemonCard from "../FlippablePokemonCard";
 import "./index.css";
 
+
+
 function HomePage() {
   const [pokemons, setPokemons] = useState([]);
   const [search, setSearch] = useState("");
@@ -29,7 +31,11 @@ function HomePage() {
 
   const location = useLocation();
   const navigate = useNavigate();
-
+  const [foundPokemons, setFoundPokemons] = useState([]);
+  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes
+  const [gameStarted, setGameStarted] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
+  const [gameWon, setGameWon] = useState(false);
   const POKEMON_TYPES = [
     { label: "Feu", value: "Fire" }, { label: "Eau", value: "Water" }, { label: "Plante", value: "Grass" },
     { label: "Électrik", value: "Electric" }, { label: "Sol", value: "Ground" }, { label: "Roche", value: "Rock" },
@@ -63,10 +69,110 @@ function HomePage() {
     fetchData();
   }, [location]);
 
+  //Pour le timer décompte
+
+ // Modifiez l'useEffect pour le timer afin de mieux gérer la condition de défaite
+useEffect(() => {
+  if (!gameStarted || timeLeft <= 0 || gameWon) return;
+
+  const timer = setTimeout(() => {
+    setTimeLeft((prev) => {
+      const next = prev - 1;
+
+      // Si on arrive à zéro, on vérifie qu'on n'a pas déjà gagné
+      if (next <= 0) {
+        if (foundPokemons.length < pokemons.length) {
+          setGameOver(true);
+          // Le son de gameover sera joué grâce à l'useEffect qui surveille gameOver
+        }
+        return 0;
+      }
+
+      return next;
+    });
+  }, 1000);
+
+  return () => clearTimeout(timer);
+}, [gameStarted, timeLeft, gameWon, foundPokemons, pokemons]);
+
+// Modifiez l'useEffect pour la vérification de victoire
+// Unique useEffect pour vérifier la condition de victoire
+// Unique useEffect pour vérifier la condition de victoire
+useEffect(() => {
+  // Log pour débogage
+  console.log("Vérification victoire:", {
+    found: foundPokemons.length,
+    total: pokemons.length,
+    gameStarted: gameStarted,
+    condition: foundPokemons.length >= 151
+  });
+
+  // Vérifier la victoire uniquement si:
+  // 1. Le jeu est en cours
+  // 2. Le joueur n'a pas déjà perdu
+  // 3. Le joueur n'a pas déjà gagné
+  if (gameStarted && !gameOver && !gameWon) {
+    // Si le joueur a trouvé au moins 151 Pokémon
+    if (foundPokemons.length >= 151) {
+      console.log("🎉 VICTOIRE DÉTECTÉE!");
+      setGameWon(true);
+    }
+  }
+}, [foundPokemons.length, pokemons.length, gameStarted, gameOver, gameWon]);
+// Ces deux useEffect sont déjà corrects pour jouer les sons
+useEffect(() => {
+  if (gameWon) {
+    const audio = new Audio("/sounds/victory.wav");
+    audio.play();
+  }
+}, [gameWon]);
+
+useEffect(() => {
+  if (gameOver) {
+    const audio = new Audio("/sounds/gameover.wav");
+    audio.play();
+  }
+}, [gameOver]);
+    
   const handleSearch = (searchTerm, typeFilters) => {
     setSearch(searchTerm);
     setSelectedTypes(typeFilters);
   };
+
+
+  //  Le useEffect suivant s’active automatiquement
+
+
+  
+// Vérifie victoire
+
+useEffect(() => {
+  // Vérifier si le jeu est commencé, qu'on n'a pas déjà perdu et qu'il y a des Pokémon chargés
+  if (gameStarted && !gameOver && pokemons.length > 0) {
+    // Si tous les Pokémon disponibles ont été trouvés
+    if (foundPokemons.length >= pokemons.length) {
+      setGameWon(true);
+    }
+  }
+}, [foundPokemons, pokemons, gameStarted, gameOver]);
+
+// Pour jouer le son de victoire (ce useEffect peut rester inchangé)
+useEffect(() => {
+  if (gameWon) {
+    const audio = new Audio("/sounds/victory.wav");
+    audio.play();
+  }
+}, [gameWon]);
+
+
+// Pour jouer le son de game over (ce useEffect peut rester inchangé)
+useEffect(() => {
+  if (gameOver) {
+    const audio = new Audio("/sounds/gameover.wav");
+    audio.play();
+  }
+}, [gameOver]);
+
 
   const filteredPokemons = pokemons.filter((pokemon) => {
     const matchesSearch = pokemon.name?.french?.toLowerCase().includes(search.toLowerCase());
@@ -112,6 +218,15 @@ function HomePage() {
     setSuccessModalMessage("");
   };
    
+  //Formate le temps 
+
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60).toString().padStart(2, "0");
+    const s = (seconds % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
+  };
+
+  
   return (
     <div className="home-container">
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
@@ -121,14 +236,57 @@ function HomePage() {
 
       {successMessage && <div className="success-message">{successMessage}</div>}
 
+      {!gameStarted && (
+        <button onClick={() => setGameStarted(true)} className="start-game-button">
+          Commencer le jeu
+        </button>
+      )}
+      {gameStarted && (
+        <div className="timer">⏱️ Temps restant : {formatTime(timeLeft)}</div>
+      )}
+
       <div className="pokemon-list" >
         {filteredPokemons.map((pokemon) => (
+          
           <FlippablePokemonCard
             key={pokemon._id}
             pokemon={pokemon}
-            onChooseAction={(p) => setSelectedPokemon(p)}
+            foundPokemons={foundPokemons}
+            onChooseAction={(p, openModal = false) => {
+              // Ajouter à foundPokemons si pas déjà présent
+              if (!foundPokemons.includes(p._id)) {
+                setFoundPokemons((prev) => [...prev, p._id]);
+              }
+              
+              // Ouvrir le modal seulement si explicitement demandé
+              if (openModal) {
+                setSelectedPokemon(p);
+              }
+            }}
           />
+        
         ))}
+
+        {gameOver && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h2>⏰ Temps écoulé !</h2>
+              <p>Désolé, vous n'avez pas trouvé tous les Pokémon.</p>
+              <button onClick={() => window.location.reload()}>Recommencer</button>
+            </div>
+          </div>
+        )}
+
+        {gameWon && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h2>🎉 Félicitations !</h2>
+              <p>Vous avez trouvé tous les Pokémon !</p>
+              <button onClick={() => window.location.reload()}>Rejouer</button>
+            </div>
+          </div>
+        )}
+
       </div>
 
       {showModal && (
