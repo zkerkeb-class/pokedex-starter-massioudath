@@ -158,7 +158,7 @@ button {
 }
 
 button:hover {
-  background-color:#e0f2ff;  /* Rose plus foncé sur hover */
+  background-color: #ff3385;  /* Rose plus foncé sur hover */
 }
 
 .success-message {

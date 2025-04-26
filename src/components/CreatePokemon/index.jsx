@@ -62,23 +62,24 @@ function CreatePokemon({ onClose, onCreated }) {
     };
 
     try {
-      const created = await createPokemon(newPokemon); // ici on récupère la réponse
-    
-      if (onCreated) onCreated(created); // et on envoie la vraie version retournée par Mongo
-    
+      const created = await createPokemon(newPokemon);
+      if (onCreated) onCreated(created);
       setFormData({ name: "", type: [], sprite: "" });
       setSuccessModal(true);
-    
+
       setTimeout(() => {
-        window.location.reload(); // 🔄 recharge la page proprement
+        window.location.reload();
       }, 1000);
-      
-    
-    
+
     } catch (error) {
       console.error("❌ Erreur lors de la création du Pokémon", error);
       console.log("🧾 Détails de l'erreur :", error.response?.data);
     }
+  };
+
+  const handleCancel = (e) => {
+    e.preventDefault();
+    onClose();
   };
 
   return (
@@ -117,7 +118,10 @@ function CreatePokemon({ onClose, onCreated }) {
             required
           />
 
-          <button type="submit">Créer</button>
+          <div className="modal-buttons">
+            <button type="submit" className="create-button">Créer</button>
+            <button type="button" className="cancel-button" onClick={handleCancel}>Annuler</button>
+          </div>
         </form>
 
         {successModal && (
