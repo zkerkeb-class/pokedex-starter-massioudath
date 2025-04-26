@@ -53,24 +53,29 @@ import SearchBar from "./components/searchBar";
 //////////////////////////////////////////////////////////////////
 // ✅ Nouveau code : Utilisation de React Router pour la navigation
 //////////////////////////////////////////////////////////////////
-
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import HomePage from './components/HomePage'; // Page d'accueil
-import PokemonDetail from './components/PokemonDetail'; // Détail d’un Pokémon
-import CreatePokemon from './components/CreatePokemon'; // Création d’un Pokémon
-import EditPokemon from './components/EditPokemon'; // Modification d’un Pokémon
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import HomePage from './components/HomePage';
+import PokemonDetail from './components/PokemonDetail';
+import CreatePokemon from './components/CreatePokemon';
+import EditPokemon from './components/EditPokemon';
+import LoginUser from './components/LoginUser';
+import RegisterUser from './components/RegisterUser';
 
 function App() {
+  const token = localStorage.getItem('token'); // 📦 On récupère le token
+
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<HomePage />} /> {/* Page d'accueil */}
-        <Route path="/pokemon/:id" element={<PokemonDetail />} /> {/* Page de détail */}
-        <Route path="/create" element={<CreatePokemon />} /> {/* Formulaire de création */}
-        <Route path="/edit/:id" element={<EditPokemon />} /> {/* Formulaire d’édition */}
-        
-        
-        
+        {/* Routes publiques */}
+        <Route path="/login" element={<LoginUser />} />
+        <Route path="/register" element={<RegisterUser />} />
+
+        {/* Routes protégées */}
+        <Route path="/" element={token ? <HomePage /> : <Navigate to="/login" />} />
+        <Route path="/pokemon/:id" element={token ? <PokemonDetail /> : <Navigate to="/login" />} />
+        <Route path="/create" element={token ? <CreatePokemon /> : <Navigate to="/login" />} />
+        <Route path="/edit/:id" element={token ? <EditPokemon /> : <Navigate to="/login" />} />
       </Routes>
     </Router>
   );

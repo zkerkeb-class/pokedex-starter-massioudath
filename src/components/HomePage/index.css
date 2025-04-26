@@ -104,13 +104,13 @@
 }
 
 .create-button:hover {
-  background-color: #5a3bc1;  /* Couleur plus foncée sur hover */
+  background-color:#6a4cfc;  /* Couleur plus foncée sur hover */
   transform: scale(1.05);  /* Légère animation d'agrandissement */
 }
 
 /* General page background */
 body {
-  background-color: #ffdef8;  /* Rose clair */
+  background-color: #e0f2ff;  /* Rose clair */
   color: #333;  /* Texte en gris foncé pour contraster avec le fond rose */
   font-family: 'Arial', sans-serif;
   margin: 0;
@@ -119,7 +119,7 @@ body {
 
 /* Container pour les cartes */
 .pokemon-card-container {
-  background-color: #ffcc80;  /* Orange doux */
+  background-color:#e0f2ff;  /* Orange doux */
   border-radius: 10px;
   margin: 10px;
   width: 180px; /* Limite la largeur des cartes */
@@ -148,7 +148,7 @@ body {
 }
 
 button {
-  background-color: #ff66b2;  /* Bouton rose */
+  background-color:#e0f2ff;  /* Bouton rose */
   color: white;
   padding: 10px;
   border: none;
@@ -158,7 +158,7 @@ button {
 }
 
 button:hover {
-  background-color: #ff3385;  /* Rose plus foncé sur hover */
+  background-color:#e0f2ff;  /* Rose plus foncé sur hover */
 }
 
 .success-message {
@@ -351,4 +351,144 @@ button:hover {
   .pokemon-list {
     gap: 0.8rem;
   }
+}
+
+.search-create-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.user-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.user-details {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: white;
+  padding: 0.8rem 1.2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.avatar {
+  background-color: #4f46e5; /* Bleu professionnel */
+  color: white;
+  width: 40px;
+  height: 40px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.user-email {
+  font-size: 1rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.logout-button {
+  background-color: crimson;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.logout-button:hover {
+  background-color: #c70039;
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #6a0dad;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 10px;
+  font-size: 18px;
+}
+.user-details {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.home-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 80px;
+  background-color: #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0;
+  border-right: 1px solid #ddd;
+}
+
+.user-profile {
+  position: relative; /* pour positionner le menu par rapport à l'avatar */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  background-color: #4A00E0;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.user-menu {
+  position: absolute;
+  top: 60px;
+  left: 0; /* Aligné avec le bord gauche de l'avatar */
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  padding: 8px 16px;
+  min-width: 180px;
+  text-align: center;
+  z-index: 100;
+}
+
+.logout-button {
+  background-color: #f44336;
+  color: white;
+  padding: 8px 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
 }

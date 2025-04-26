@@ -12,6 +12,18 @@ import "./index.css";
 
 
 function HomePage() {
+
+  const [userEmail, setUserEmail] = useState(localStorage.getItem('email') || "");
+
+  useEffect(() => {
+    const email = localStorage.getItem('email');
+    if (email) {
+      setUserEmail(email);
+    }
+  }, []);
+  
+
+
   const [pokemons, setPokemons] = useState([]);
   const [search, setSearch] = useState("");
   const [selectedTypes, setSelectedTypes] = useState([]);
@@ -28,7 +40,8 @@ function HomePage() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [pokemonToDelete, setPokemonToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-
+  const [showUserMenu, setShowUserMenu] = useState(false);
+ 
   const location = useLocation();
   const navigate = useNavigate();
   const [foundPokemons, setFoundPokemons] = useState([]);
@@ -44,7 +57,7 @@ function HomePage() {
     { label: "Ténèbres", value: "Dark" }, { label: "Psy", value: "Psychic" }, { label: "Combat", value: "Fighting" },
     { label: "Glace", value: "Ice" }, { label: "Fée", value: "Fairy" }, { label: "Normal", value: "Normal" },
   ];
-
+  
   useEffect(() => {
     async function fetchData() {
       let allPokemons = [];
@@ -205,14 +218,18 @@ useEffect(() => {
   const handleDelete = async (mongoId, name) => {
     try {
       await deletePokemon(mongoId);
+      setShowDeleteModal(false); // 🔥 ferme le modal
+      setPokemonToDelete(null); // 🔥 nettoie la sélection
       setPokemons((prev) => prev.filter((p) => p._id !== mongoId));
       setSuccessModalMessage(`✅ ${name} supprimé avec succès !`);
       setShowSuccessModal(true);
     } catch (error) {
+      setShowDeleteModal(false); // 🔥 ferme même en cas d'erreur
       alert("❌ Échec de la suppression");
     }
   };
-
+  
+  
   const closeSuccessModal = () => {
     setShowSuccessModal(false);
     setSuccessModalMessage("");
@@ -225,179 +242,227 @@ useEffect(() => {
     const s = (seconds % 60).toString().padStart(2, "0");
     return `${m}:${s}`;
   };
-
+  
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('email');
+    setUserEmail(""); // ⚡ Mettre à jour directement
+    navigate('/login');
+  };
+  const maskEmail = (email) => {
+    const [name, domain] = email.split("@");
+    const visiblePart = name.slice(0, 2); // Garde les 2 premières lettres
+    const maskedPart = "*".repeat(Math.max(0, name.length - 2)); // Remplace le reste par des *
+    return `${visiblePart}${maskedPart}@${domain}`;
+  };
+  
+  const getInitials = (email) => {
+    if (!email) return '';
+    return email.slice(0, 2).toUpperCase(); // Prend les 2 premières lettres en majuscule
+  };
+  
   
   return (
-    <div className="home-container">
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-        <SearchBar onSearch={handleSearch} />
-        <button onClick={() => setShowModal(true)} className="create-button">Créer un Pokémon</button>
-      </div>
+   
+      <div className="home-layout">
+    
+        <div className="sidebar">
+        <div className="user-profile">
+          <div className="avatar" onClick={() => setShowUserMenu(!showUserMenu)}>
+            {getInitials(userEmail)}
+          </div>
 
-      {successMessage && <div className="success-message">{successMessage}</div>}
+          {showUserMenu && (
+            <div className="user-menu">
+              <div>{userEmail}</div>
+              <button onClick={handleLogout} className="logout-button">
+                Déconnexion
+              </button>
+            </div>
+          )}
+        </div>
 
-      {!gameStarted && (
-        <button onClick={() => setGameStarted(true)} className="start-game-button">
-          Commencer le jeu
-        </button>
-      )}
-      {gameStarted && (
-        <div className="timer">⏱️ Temps restant : {formatTime(timeLeft)}</div>
-      )}
-
-      <div className="pokemon-list" >
-        {filteredPokemons.map((pokemon) => (
+        </div>
+    
+        <div className="main-content">
           
-          <FlippablePokemonCard
-            key={pokemon._id}
-            pokemon={pokemon}
-            foundPokemons={foundPokemons}
-            onChooseAction={(p, openModal = false) => {
-              // Ajouter à foundPokemons si pas déjà présent
-              if (!foundPokemons.includes(p._id)) {
-                setFoundPokemons((prev) => [...prev, p._id]);
-              }
-              
-              // Ouvrir le modal seulement si explicitement demandé
-              if (openModal) {
-                setSelectedPokemon(p);
-              }
-            }}
-          />
-        
-        ))}
+        <SearchBar onSearch={handleSearch} onCreate={() => setShowModal(true)} />
 
-        {gameOver && (
-          <div className="modal-overlay">
-            <div className="modal">
-              <h2>⏰ Temps écoulé !</h2>
-              <p>Désolé, vous n'avez pas trouvé tous les Pokémon.</p>
-              <button onClick={() => window.location.reload()}>Recommencer</button>
-            </div>
-          </div>
-        )}
-
-        {gameWon && (
-          <div className="modal-overlay">
-            <div className="modal">
-              <h2>🎉 Félicitations !</h2>
-              <p>Vous avez trouvé tous les Pokémon !</p>
-              <button onClick={() => window.location.reload()}>Rejouer</button>
-            </div>
-          </div>
-        )}
-
-      </div>
-
-      {showModal && (
-        <CreatePokemon
-          onClose={() => setShowModal(false)}
-          onCreated={(newPokemon) => setPokemons((prev) => [newPokemon, ...prev])}
-        />
-      )}
-
-      {selectedPokemon && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h2>Que voulez-vous faire avec {selectedPokemon.name.french} ?</h2>
-            <img src={selectedPokemon.image} alt={selectedPokemon.name.french} width="150" />
-            <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
-              <button
-                onClick={() => {
-                  setEditingPokemon(selectedPokemon);
-                  setEditForm({
-                    name: selectedPokemon.name.french,
-                    type: selectedPokemon.type.join(", "),
-                    image: selectedPokemon.image,
-                  });
-                  setEditModalOpen(true);
-                  setSelectedPokemon(null);
+    
+          {successMessage && <div className="success-message">{successMessage}</div>}
+    
+          {!gameStarted && (
+            <button onClick={() => setGameStarted(true)} className="start-game-button">
+              Commencer le jeu
+            </button>
+          )}
+          {gameStarted && (
+            <div className="timer">⏱️ Temps restant : {formatTime(timeLeft)}</div>
+          )}
+    
+          <div className="pokemon-list">
+            {filteredPokemons.map((pokemon) => (
+              <FlippablePokemonCard
+                key={pokemon._id}
+                pokemon={pokemon}
+                foundPokemons={foundPokemons}
+                onChooseAction={(p, openModal = false) => {
+                  if (!foundPokemons.includes(p._id)) {
+                    setFoundPokemons((prev) => [...prev, p._id]);
+                  }
+                  if (openModal) {
+                    setSelectedPokemon(p);
+                  }
                 }}
-                style={{ backgroundColor: "gold", padding: "0.5rem", flex: 1 }}
-              >Modifier</button>
-              <button
-                onClick={() => {
-                  setPokemonToDelete(selectedPokemon);
-                  setShowDeleteModal(true);
-                  setSelectedPokemon(null);
-                }}
-                style={{ backgroundColor: "crimson", color: "white", padding: "0.5rem", flex: 1 }}
-              >Supprimer</button>
-              <button
-                onClick={() => setSelectedPokemon(null)}
-                style={{ backgroundColor: "#ccc", padding: "0.5rem", flex: 1 }}
-              >Annuler</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {editModalOpen && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h2>Modifier {editForm.name}</h2>
-            <img src={editForm.image} alt={editForm.name} width="150" />
-            <form onSubmit={handleUpdate} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-              <input type="text" name="name" value={editForm.name} onChange={e => setEditForm({ ...editForm, name: e.target.value })} required />
-              <Select
-                isMulti
-                name="type"
-                options={POKEMON_TYPES}
-                value={POKEMON_TYPES.filter(option => editForm.type.includes(option.value))}
-                onChange={(selected) => setEditForm({ ...editForm, type: selected.map(o => o.value) })}
               />
-              <input type="text" name="image" value={editForm.image} onChange={e => setEditForm({ ...editForm, image: e.target.value })} required />
-              <div style={{ display: "flex", gap: "1rem" }}>
-                <button type="submit" style={{ backgroundColor: "gold", flex: 1 }}>Mettre à jour</button>
-                <button type="button" onClick={() => setEditModalOpen(false)} style={{ flex: 1 }}>Annuler</button>
+            ))}
+    
+            {gameOver && (
+              <div className="modal-overlay">
+                <div className="modal">
+                  <h2>⏰ Temps écoulé !</h2>
+                  <p>Désolé, vous n'avez pas trouvé tous les Pokémon.</p>
+                  <button onClick={() => window.location.reload()}>Recommencer</button>
+                </div>
               </div>
-            </form>
+            )}
+    
+            {gameWon && (
+              <div className="modal-overlay">
+                <div className="modal">
+                  <h2>🎉 Félicitations !</h2>
+                  <p>Vous avez trouvé tous les Pokémon !</p>
+                  <button onClick={() => window.location.reload()}>Rejouer</button>
+                </div>
+              </div>
+            )}
           </div>
-        </div>
-      )}
-
-      {showDeleteModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h2>Supprimer {pokemonToDelete.name.french} ?</h2>
-            <img src={pokemonToDelete.image} alt={pokemonToDelete.name.french} width="150" />
-            <p style={{ marginTop: "1rem" }}>Cette action est irréversible.</p>
-            <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
-              <button
-                onClick={() => handleDelete(pokemonToDelete._id, pokemonToDelete.name.french)}
-                style={{ backgroundColor: "crimson", color: "white", flex: 1 }}
-              >Supprimer</button>
-              <button
-                onClick={() => setShowDeleteModal(false)}
-                style={{ backgroundColor: "#ccc", flex: 1 }}
-              >Annuler</button>
+    
+          {showModal && (
+            <CreatePokemon
+              onClose={() => setShowModal(false)}
+              onCreated={(newPokemon) => setPokemons((prev) => [newPokemon, ...prev])}
+            />
+          )}
+    
+          {selectedPokemon && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <h2>Que voulez-vous faire avec {selectedPokemon.name.french} ?</h2>
+                <img src={selectedPokemon.image} alt={selectedPokemon.name.french} width="150" />
+                <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
+                  <button
+                    onClick={() => {
+                      setEditingPokemon(selectedPokemon);
+                      setEditForm({
+                        name: selectedPokemon.name.french,
+                        type: selectedPokemon.type.join(", "),
+                        image: selectedPokemon.image,
+                      });
+                      setEditModalOpen(true);
+                      setSelectedPokemon(null);
+                    }}
+                    style={{ backgroundColor: "gold", padding: "0.5rem", flex: 1 }}
+                  >Modifier</button>
+                  <button
+                    onClick={() => {
+                      setPokemonToDelete(selectedPokemon);
+                      setShowDeleteModal(true);
+                      setSelectedPokemon(null);
+                    }}
+                    style={{ backgroundColor: "crimson", color: "white", padding: "0.5rem", flex: 1 }}
+                  >Supprimer</button>
+                  <button
+                    onClick={() => setSelectedPokemon(null)}
+                    style={{ backgroundColor: "#ccc", padding: "0.5rem", flex: 1 }}
+                  >Annuler</button>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
+    
+          {editModalOpen && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <h2>Modifier {editForm.name}</h2>
+                <img src={editForm.image} alt={editForm.name} width="150" />
+                <form onSubmit={handleUpdate} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                  <input
+                    type="text"
+                    name="name"
+                    value={editForm.name}
+                    onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                    required
+                  />
+                  <Select
+                    isMulti
+                    name="type"
+                    options={POKEMON_TYPES}
+                    value={POKEMON_TYPES.filter(option => editForm.type.includes(option.value))}
+                    onChange={(selected) => setEditForm({ ...editForm, type: selected.map(o => o.value) })}
+                  />
+                  <input
+                    type="text"
+                    name="image"
+                    value={editForm.image}
+                    onChange={(e) => setEditForm({ ...editForm, image: e.target.value })}
+                    required
+                  />
+                  <div style={{ display: "flex", gap: "1rem" }}>
+                    <button type="submit" style={{ backgroundColor: "gold", flex: 1 }}>Mettre à jour</button>
+                    <button type="button" onClick={() => setEditModalOpen(false)} style={{ flex: 1 }}>Annuler</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+    
+          {showDeleteModal && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <h2>Supprimer {pokemonToDelete.name.french} ?</h2>
+                <img src={pokemonToDelete.image} alt={pokemonToDelete.name.french} width="150" />
+                <p style={{ marginTop: "1rem" }}>Cette action est irréversible.</p>
+                <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
+                  <button
+                    onClick={() => handleDelete(pokemonToDelete._id, pokemonToDelete.name.french)}
+                    style={{ backgroundColor: "crimson", color: "white", flex: 1 }}
+                  >Supprimer</button>
+                  <button
+                    onClick={() => setShowDeleteModal(false)}
+                    style={{ backgroundColor: "#ccc", flex: 1 }}
+                  >Annuler</button>
+                </div>
+              </div>
+            </div>
+          )}
+    
+          {successModalMessage && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <h2 className="success-modal">{successModalMessage}</h2>
+                <button onClick={() => setShowSuccessModal(false)} className="success-button">
+                  Fermer
+                </button>
+              </div>
+            </div>
+          )}
+    
+          {showSuccessModal && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <h2 className="success-modal">{successModalMessage}</h2>
+                <button onClick={closeSuccessModal} className="success-button">
+                  Fermer
+                </button>
+              </div>
+            </div>
+          )}
+    
         </div>
-      )}
-
-      {successModalMessage && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h2 className="success-modal">{successModalMessage}</h2>
-            <button onClick={() => setShowSuccessModal(false)} className="success-button">Fermer</button>
-          </div>
-        </div>
-      )}
-
-{showSuccessModal && (
-  <div className="modal-overlay">
-    <div className="modal">
-      <h2 className="success-modal">{successModalMessage}</h2>
-      <button onClick={closeSuccessModal} className="success-button">
-        Fermer
-      </button>
-    </div>
-  </div>
-)}
-
-    </div>
-  );
+      </div>
+    );
+  
 }
 
 export default HomePage;

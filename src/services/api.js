@@ -9,11 +9,18 @@ const api = axios.create({
   },
 });
 
+
 // Récupérer tous les Pokémon
 export const getAllPokemons = async (page = 1, limit = 10) => {
-  const response = await api.get(`?page=${page}&limit=${limit}`);
+  const token = localStorage.getItem('token'); // récupère ton token stocké après login/register
+  const response = await api.get(`?page=${page}&limit=${limit}`, {
+    headers: {
+      Authorization: `Bearer ${token}`, // injecte le token ici
+    },
+  });
   return response.data;
 };
+
 
 // Récupérer un Pokémon spécifique par ID
 export const getPokemonById = async (id) => {
@@ -29,7 +36,12 @@ export const getPokemonById = async (id) => {
 // Créer un nouveau Pokémon
 export const createPokemon = async (data) => {
   try {
-    const response = await api.post("/", data);
+    const token = localStorage.getItem('token'); // 🔥 récupère le token
+    const response = await api.post("/", data, {
+      headers: {
+        Authorization: `Bearer ${token}`, // 🔥 injecte le token ici aussi
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Erreur lors de la création du Pokémon", error);
@@ -37,11 +49,18 @@ export const createPokemon = async (data) => {
   }
 };
 
+
 // Mettre à jour un Pokémon existant
 
+// Mettre à jour un Pokémon existant
 export const updatePokemon = async (id, data) => {
   try {
-    const response = await api.put(`/${id}`, data); // ✅ PAS de "pokemon: data"
+    const token = localStorage.getItem('token'); // 🔥 récupère le token
+    const response = await api.put(`/${id}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`, // 🔥 injecte le token dans la requête PUT
+      },
+    });
     return response.data;
   } catch (error) {
     console.error(`Erreur lors de la mise à jour du Pokémon avec l'ID ${id}`, error);
@@ -52,13 +71,22 @@ export const updatePokemon = async (id, data) => {
   }
 };
 
+
 // Supprimer un Pokémon
 export const deletePokemon = async (id) => {
   try {
-    const response = await api.delete(`/${id}`);
-    return response.data;
+    const token = localStorage.getItem('token');
+    await api.delete(`/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return { success: true };
   } catch (error) {
     console.error(`Erreur lors de la suppression du Pokémon avec l'ID ${id}`, error);
     throw error;
   }
 };
+
+
+
