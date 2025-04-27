@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import "./index.css";
 
-function SearchBar({ onSearch, onCreate }) {
+function SearchBar({ onSearch, onCreate, onStartGame }) {
   const [search, setSearch] = useState("");
   const [selectedTypes, setSelectedTypes] = useState([]);
-
+  
   const POKEMON_TYPES = [
     { label: "Feu", value: "Fire" }, { label: "Eau", value: "Water" }, { label: "Plante", value: "Grass" },
     { label: "Électrik", value: "Electric" }, { label: "Sol", value: "Ground" }, { label: "Roche", value: "Rock" },
@@ -13,22 +13,22 @@ function SearchBar({ onSearch, onCreate }) {
     { label: "Ténèbres", value: "Dark" }, { label: "Psy", value: "Psychic" }, { label: "Combat", value: "Fighting" },
     { label: "Glace", value: "Ice" }, { label: "Fée", value: "Fairy" }, { label: "Normal", value: "Normal" },
   ];
-
+  
   useEffect(() => {
     onSearch(search, selectedTypes);
   }, [search, selectedTypes, onSearch]);
-
+  
   const handleTypeToggle = (value) => {
     setSelectedTypes(prev =>
       prev.includes(value) ? prev.filter(type => type !== value) : [...prev, value]
     );
   };
-
+  
   const resetFilters = () => {
     setSelectedTypes([]);
     setSearch("");
   };
-
+  
   return (
     <div className="filter-container">
       <div className="search-input">
@@ -49,7 +49,7 @@ function SearchBar({ onSearch, onCreate }) {
           </button>
         )}
       </div>
-
+      
       <div className="filter-header">
         <span>Filtrer par type</span>
         {selectedTypes.length > 0 && (
@@ -58,7 +58,7 @@ function SearchBar({ onSearch, onCreate }) {
           </button>
         )}
       </div>
-
+      
       <div className="filter-options">
         {POKEMON_TYPES.map((type) => (
           <div
@@ -77,11 +77,14 @@ function SearchBar({ onSearch, onCreate }) {
           </div>
         ))}
       </div>
-
-      {/* 👇 Ajout du bouton Créer un Pokémon INSIDE */}
+      
+      {/* Container pour les deux boutons */}
       <div className="create-button-container">
         <button className="create-button" onClick={onCreate}>
           Créer un Pokémon
+        </button>
+        <button className="start-game-button" onClick={onStartGame}>
+          Commencer le jeu
         </button>
       </div>
     </div>

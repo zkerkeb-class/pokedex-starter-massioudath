@@ -1,10 +1,34 @@
+/* Palette de couleurs */
+:root {
+  --primary: #4a6baf;       /* Bleu Pokémon */
+  --primary-light: #dbe6ff; /* Bleu clair */
+  --primary-dark: #2a4b8f;  /* Bleu foncé */
+  --secondary: #ffcb05;     /* Jaune Pokémon */
+  --secondary-dark: #e6b400;/* Jaune foncé */
+  --accent: #ff5350;        /* Rouge Pokémon */
+  --light: #f8f9fd;         /* Blanc cassé */
+  --dark: #333333;          /* Gris foncé */
+  --card-bg: #ffffff;       /* Blanc */
+  --success: #4caf50;       /* Vert */
+  --danger: #f44336;        /* Rouge */
+}
+
+/* Fond principal */
+body {
+  background-color: var(--primary-light);
+  color: var(--dark);
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
 /* Container général de la page */
 .home-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 20px;
-  background-color: #fce4ec;  /* Fond rose */
+  background-color: var(--primary-light);
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -15,7 +39,7 @@
   flex-wrap: wrap;
   justify-content: center;
   align-items: flex-start;
-  gap: 1.5rem; /* Espacement augmenté entre les cartes */
+  gap: 1.5rem;
   padding: 1rem;
   max-width: 100%;
   overflow-y: auto;
@@ -24,16 +48,23 @@
 
 /* Style des cartes Pokémon */
 .pokemon-card {
-  background-color: #f9a825; /* Fond orange pour chaque carte */
-  border-radius: 8px;
+  background-color: var(--card-bg);
+  border-radius: 12px;
   padding: 15px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  width: 100%; /* S'adapte à la taille disponible */
-  max-width: 220px; /* Limite la largeur des cartes */
+  width: 100%;
+  max-width: 220px;
+  border: 2px solid var(--primary);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pokemon-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
 }
 
 /* Image des Pokémon */
@@ -44,43 +75,46 @@
   margin-bottom: 10px;
 }
 
-/* Informations des Pokémon (types, attaque, défense, HP) */
+/* Informations des Pokémon */
 .pokemon-info {
-  background-color: #fbc02d;  /* Fond jaune pour les infos */
+  background-color: var(--primary-light);
   padding: 10px;
   width: 100%;
-  border-radius: 5px;
+  border-radius: 8px;
   margin-bottom: 10px;
 }
 
 .pokemon-info p {
   margin: 5px 0;
   font-weight: bold;
+  color: var(--dark);
 }
 
 .pokemon-info strong {
-  color: #1565c0;  /* Bleu pour les titres */
+  color: var(--primary-dark);
 }
 
 /* Bouton Attaquer */
 .pokemon-card button {
-  background-color: #0d47a1;  /* Bleu */
+  background-color: var(--accent);
   color: white;
   border: none;
   padding: 10px 20px;
   font-size: 14px;
-  border-radius: 5px;
+  border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.3s;
   width: 100%;
   margin-top: 10px;
+  font-weight: bold;
 }
 
 .pokemon-card button:hover {
-  background-color: #1565c0;
+  background-color: #e64946;
+  transform: scale(1.02);
 }
 
-/* Amélioration du layout de la barre de recherche et bouton */
+/* Barre de recherche et filtres */
 .search-container {
   display: flex;
   justify-content: space-between;
@@ -89,182 +123,79 @@
   padding: 0 20px;
 }
 
-/* Le bouton de création */
+.search-create-container {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Input de recherche */
+.search-container input {
+  padding: 10px 15px;
+  border-radius: 20px;
+  border: 1px solid var(--primary);
+  width: 70%;
+  font-size: 16px;
+  background-color: var(--light);
+}
+
+/* Bouton de création */
 .create-button {
-  background-color: #6a4cfc;  /* Couleur violette */
-  color: white;  /* Texte en blanc */
-  padding: 5px 15px;  /* Ajustement des espaces internes */
-  font-size: 14px;  /* Taille du texte */
+  background-color: var(--secondary);
+  color: var(--dark);
+  padding: 8px 18px;
+  font-size: 14px;
   border: none;
-  border-radius: 12px;  /* Coins arrondis */
+  border-radius: 20px;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  white-space: nowrap;  /* Empêche le texte de se diviser */
-  width: auto;  /* Laisse la largeur s'ajuster au texte */
+  transition: all 0.3s ease;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .create-button:hover {
-  background-color:#6a4cfc;  /* Couleur plus foncée sur hover */
-  transform: scale(1.05);  /* Légère animation d'agrandissement */
-}
-
-/* General page background */
-body {
-  background-color: #e0f2ff;  /* Rose clair */
-  color: #333;  /* Texte en gris foncé pour contraster avec le fond rose */
-  font-family: 'Arial', sans-serif;
-  margin: 0;
-  padding: 0;
-}
-
-/* Container pour les cartes */
-.pokemon-card-container {
-  background-color:#e0f2ff;  /* Orange doux */
-  border-radius: 10px;
-  margin: 10px;
-  width: 180px; /* Limite la largeur des cartes */
-  padding: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  transition: all 0.3s ease-in-out;
-}
-
-/* Hover effect pour les cartes */
-.pokemon-card-container:hover {
+  background-color: var(--secondary-dark);
   transform: scale(1.05);
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
 }
 
-.pokemon-card-container h2 {
-  font-size: 20px;
-  color: #fff; /* Texte blanc pour les noms */
-  margin: 5px 0;
-  font-weight: bold;
-}
-
-.pokemon-card-container p {
-  font-size: 14px;
-  color: #333;
-}
-
-button {
-  background-color:#e0f2ff;  /* Bouton rose */
-  color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  width: 100%;
-  cursor: pointer;
-}
-
-button:hover {
-  background-color: #ff3385;  /* Rose plus foncé sur hover */
-}
-
-.success-message {
-  background-color: #4caf50;  /* Vert */
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
-  text-align: center;
-  font-size: 16px;
+/* Filtres par type */
+.filter-container {
   margin-bottom: 20px;
+  width: 100%;
 }
 
-/* Modal principal */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+.filter-container h3 {
+  color: var(--primary-dark);
+  margin-bottom: 10px;
+}
+
+.filter-buttons {
   display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   justify-content: center;
-  align-items: center;
-  z-index: 1000;
 }
 
-.modal {
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  width: 400px;
-}
-
-.modal img {
-  width: 100px;
-  height: 100px;
-  object-fit: contain;
-  margin-bottom: 20px;
-}
-
-.modal-buttons {
-  display: flex;
-  justify-content: space-evenly;
-  margin-top: 20px;
-}
-
-.modal-btn {
-  padding: 10px 20px;
-  border-radius: 5px;
+.filter-button {
+  background-color: var(--primary-light);
+  color: var(--primary-dark);
+  border: 1px solid var(--primary);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 13px;
   cursor: pointer;
-  font-size: 14px;
-  transition: 0.3s;
-  width: 30%; /* Taille des boutons ajustée */
+  transition: all 0.2s ease;
 }
 
-.edit-btn {
-  background-color: #4caf50;
+.filter-button:hover,
+.filter-button.active {
+  background-color: var(--primary);
   color: white;
 }
 
-.edit-btn:hover {
-  background-color: #45a049;
-}
-
-.delete-btn {
-  background-color: #f44336;
-  color: white;
-}
-
-.delete-btn:hover {
-  background-color: #e53935;
-}
-
-.close-btn {
-  background-color: #9e9e9e;
-  color: white;
-}
-
-.close-btn:hover {
-  background-color: #757575;
-}
-
-.success-modal {
-  color: green;
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-align: center;
-}
-
-.success-button {
-  background-color: #facc15; /* jaune bouton */
-  color: #000;
-  font-weight: bold;
-  border: none;
-  padding: 0.4rem 1.2rem;
-  border-radius: 9999px; /* effet pill */
-  cursor: pointer;
-  margin-top: 1rem;
-  width: auto;
-  display: inline-block;
-  min-width: 120px;
-  text-align: center;
-}
-
-/* Style pour les cartes retournables - SECTION CORRIGÉE */
+/* Style pour les cartes retournables */
 .flippable-card {
   width: 220px;
   height: 340px;
@@ -272,7 +203,7 @@ button:hover {
   margin: 1rem;
   cursor: pointer;
   position: relative;
-  flex: 0 0 auto; /* empêche de rétrécir ou grandir */
+  flex: 0 0 auto;
 }
 
 .flippable-card-inner {
@@ -299,22 +230,24 @@ button:hover {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  border: 2px solid var(--primary);
 }
 
 .card-front {
-  background-color: #ffd6eb;
+  background-color: var(--card-bg);
   z-index: 1;
   font-weight: bold;
   font-size: 1.2rem;
-  color: #d50032;
+  color: var(--primary-dark);
 }
 
 .card-back {
-  background-color: #ffa726;
+  background-color: var(--primary-light);
   transform: rotateY(180deg);
   z-index: 0;
 }
 
+/* Boutons d'action */
 .action-buttons {
   margin-top: 1rem;
   display: flex;
@@ -323,7 +256,196 @@ button:hover {
   gap: 0.5rem;
 }
 
-/* Media queries pour la responsivité */
+.action-button {
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background-color: var(--secondary);
+  color: var(--dark);
+}
+
+.edit-btn:hover {
+  background-color: var(--secondary-dark);
+}
+
+.delete-btn {
+  background-color: var(--danger);
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #d32f2f;
+}
+
+/* Info utilisateur */
+.user-info {
+  display: flex;
+  justify-content: flex-end; /* Aligne à droite au lieu de center */
+  margin-bottom: 1.5rem;
+  width: 100%;
+  position: relative; /* Pour positionner correctement le dropdown */
+}
+
+.user-details {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: var(--card-bg);
+  padding: 0.8rem 1.2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: absolute; /* Position absolue pour le dropdown */
+  right: 20px; /* Distance depuis la droite */
+  top: 100%; /* Positionne sous l'icône */
+  z-index: 100; /* S'assure qu'il apparaît au-dessus des autres éléments */
+  margin-top: 5px; /* Petit espace entre l'icône et le dropdown */
+}
+.profile-icon-container {
+  position: relative;
+  cursor: pointer;
+}
+.avatar {
+  background-color: var(--primary-dark);
+  color: white;
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+
+.user-email {
+  flex-grow: 1;
+  margin: 0;
+  padding: 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.logout-button {
+  margin: 0;
+  padding: 8px 12px;
+  background-color: #ff5350;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.logout-button:hover {
+  background-color: #e64946;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: var(--card-bg);
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+  width: 400px;
+  border: 2px solid var(--primary);
+}
+
+.modal img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 20px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 20px;
+}
+
+.modal-btn {
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.3s;
+  width: 30%;
+  border: none;
+  font-weight: bold;
+}
+
+/* Layout principal */
+.home-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 80px;
+  background-color: var(--primary-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0;
+  border-right: 1px solid var(--primary);
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+/* Message de succès */
+.success-message {
+  background-color: var(--success);
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 16px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.success-button {
+  background-color: var(--secondary);
+  color: var(--dark);
+  font-weight: bold;
+  border: none;
+  padding: 0.4rem 1.2rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  margin-top: 1rem;
+  width: auto;
+  display: inline-block;
+  min-width: 120px;
+  text-align: center;
+}
+
+/* Responsivité */
 @media (max-width: 1024px) {
   .flippable-card {
     width: 200px;
@@ -340,6 +462,15 @@ button:hover {
   .pokemon-list {
     gap: 1rem;
   }
+  
+  .search-create-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .search-container input {
+    width: 100%;
+  }
 }
 
 @media (max-width: 480px) {
@@ -351,144 +482,10 @@ button:hover {
   .pokemon-list {
     gap: 0.8rem;
   }
-}
-
-.search-create-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-.user-info {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.user-details {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  background-color: white;
-  padding: 0.8rem 1.2rem;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.avatar {
-  background-color: #4f46e5; /* Bleu professionnel */
-  color: white;
-  width: 40px;
-  height: 40px;
-  font-size: 1.5rem;
-  font-weight: bold;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.user-email {
-  font-size: 1rem;
-  color: #333;
-  font-weight: 500;
-}
-
-.logout-button {
-  background-color: crimson;
-  color: white;
-  border: none;
-  padding: 0.6rem 1rem;
-  border-radius: 8px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.logout-button:hover {
-  background-color: #c70039;
-}
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: #6a0dad;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  margin-right: 10px;
-  font-size: 18px;
-}
-.user-details {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-.home-layout {
-  display: flex;
-  min-height: 100vh;
-}
-
-.sidebar {
-  width: 80px;
-  background-color: #f0f0f0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1rem 0;
-  border-right: 1px solid #ddd;
-}
-
-.user-profile {
-  position: relative; /* pour positionner le menu par rapport à l'avatar */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.avatar {
-  width: 50px;
-  height: 50px;
-  background-color: #4A00E0;
-  color: white;
-  font-size: 20px;
-  font-weight: bold;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.user-menu {
-  position: absolute;
-  top: 60px;
-  left: 0; /* Aligné avec le bord gauche de l'avatar */
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  padding: 8px 16px;
-  min-width: 180px;
-  text-align: center;
-  z-index: 100;
-}
-
-.logout-button {
-  background-color: #f44336;
-  color: white;
-  padding: 8px 12px;
-  margin-top: 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-
-.main-content {
-  flex: 1;
-  padding: 2rem;
-  overflow-y: auto;
+  
+  .filter-buttons {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
 }

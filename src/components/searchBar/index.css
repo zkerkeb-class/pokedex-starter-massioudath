@@ -1,12 +1,13 @@
-/* SearchBar.css */
+/* SearchBar.css avec correctifs complets */
 .filter-container {
   background: linear-gradient(135deg, #fff2fc 0%, #e0f2ff 100%);
   border-radius: 16px;
-  padding: 1.2rem;
+  padding: 1rem;
   margin-bottom: 1.5rem;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
   width: 100%;
-  max-width: 1000px;
+  max-width: 2000px;
+  box-sizing: border-box;
 }
 
 .search-input {
@@ -19,6 +20,8 @@
   margin-bottom: 1.2rem;
   border: 2px solid transparent;
   transition: all 0.3s ease;
+  box-sizing: border-box;
+  max-width: 100%;
 }
 
 .search-input:focus-within {
@@ -34,6 +37,8 @@
   font-size: 1rem;
   color: #333;
   background: transparent;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .search-icon {
@@ -41,6 +46,7 @@
   height: 18px;
   margin-right: 10px;
   color: #999;
+  flex-shrink: 0;
 }
 
 .clear-search {
@@ -50,6 +56,7 @@
   font-size: 20px;
   cursor: pointer;
   padding: 0 5px;
+  flex-shrink: 0;
 }
 
 .clear-search:hover {
@@ -61,6 +68,7 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
 .filter-header span {
@@ -81,6 +89,7 @@
   display: flex;
   align-items: center;
   gap: 5px;
+  white-space: nowrap;
 }
 
 .reset-filters:hover {
@@ -96,13 +105,17 @@
 .filter-options {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.7rem;
+  gap: 0.5rem;
   padding: 0.5rem 0;
+  justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* Style des options de filtre individuelles */
 .filter-option {
   position: relative;
+  box-sizing: border-box;
 }
 
 .filter-option input[type="checkbox"] {
@@ -113,16 +126,18 @@
 
 .filter-option label {
   display: inline-block;
-  padding: 0.5rem 1rem;
+  padding: 0.4rem 0.8rem;
   background-color: white;
   border-radius: 20px;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 500;
   color: #666;
   cursor: pointer;
   transition: all 0.2s ease;
   border: 2px solid transparent;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  white-space: nowrap;
+  box-sizing: border-box;
 }
 
 /* Style spécifique pour chaque type de Pokémon */
@@ -182,44 +197,62 @@
 /* Responsive */
 @media (max-width: 768px) {
   .filter-options {
-    gap: 0.5rem;
+    gap: 0.4rem;
   }
   
   .filter-option label {
-    padding: 0.4rem 0.8rem;
+    padding: 0.3rem 0.7rem;
     font-size: 0.8rem;
   }
   
   .search-input {
     padding: 0.5rem 0.8rem;
   }
+  
+  .filter-header {
+    margin-bottom: 0.7rem;
+  }
+  
+  .filter-header span {
+    font-size: 1rem;
+  }
 }
 
 @media (max-width: 480px) {
   .filter-container {
-    padding: 1rem;
+    padding: 0.8rem;
+    border-radius: 12px;
   }
   
   .filter-options {
-    gap: 0.4rem;
+    gap: 0.3rem;
   }
   
   .filter-option label {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+  
+  .reset-filters {
     padding: 0.3rem 0.6rem;
     font-size: 0.75rem;
   }
 }
 
-
+/* Container pour les boutons d'action */
 .create-button-container {
   display: flex;
   justify-content: flex-end;
   margin-top: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-.create-button {
-  background-color: #6a4cfc;
-  color: white;
+/* Bouton "Créer un Pokémon" */
+.create-button,
+button:nth-child(1) {
+  background-color: #4a6baf !important; /* Bleu Pokémon */
+  color: white !important;
   border: none;
   padding: 0.7rem 1.5rem;
   font-size: 1rem;
@@ -227,8 +260,109 @@
   border-radius: 24px;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(74, 107, 175, 0.3);
 }
 
-.create-button:hover {
-  background-color: #5a3dcb;
+.create-button:hover,
+button:nth-child(1):hover {
+  background-color: #3a5b9f !important;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(74, 107, 175, 0.4);
+}
+
+/* Bouton "Commencer le jeu" */
+.start-game-button,
+button:nth-child(2) {
+  background-color: #ffcb05 !important; /* Jaune Pokémon */
+  color: #333 !important; /* Texte foncé pour contraste */
+  border: none;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(255, 203, 5, 0.3);
+}
+
+.start-game-button:hover,
+button:nth-child(2):hover {
+  background-color: #f5c000 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(255, 203, 5, 0.4);
+}
+
+/* Animation subtile au clic */
+.create-button:active, 
+.start-game-button:active,
+button:nth-child(1):active,
+button:nth-child(2):active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Sélecteurs alternatifs pour cibler les boutons par texte */
+button[aria-label="Créer un Pokémon"], 
+button:contains("Créer un Pokémon") {
+  background-color: #4a6baf !important;
+  color: white !important;
+}
+
+button[aria-label="Commencer le jeu"], 
+button:contains("Commencer le jeu") {
+  background-color: #ffcb05 !important;
+  color: #333 !important;
+}
+
+/* Ciblage direct par sélecteur d'enfant */
+.filter-container .create-button-container button:nth-child(1) {
+  background-color: #4a6baf !important; /* Bleu pour "Créer un Pokémon" */
+  color: white !important;
+}
+
+.filter-container .create-button-container button:nth-child(2) {
+  background-color: #ffcb05 !important; /* Jaune pour "Commencer le jeu" */
+  color: #333 !important;
+}
+
+/* Responsive pour les boutons */
+@media (max-width: 480px) {
+  .create-button-container {
+    justify-content: center;
+    flex-direction: column-reverse; /* Le bouton de jeu apparaît en premier */
+    width: 100%;
+  }
+  
+  .create-button, 
+  .start-game-button,
+  button:nth-child(1),
+  button:nth-child(2) {
+    width: 100%;
+    padding: 0.6rem 1.2rem;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Global pour éviter les débordements */
+* {
+  box-sizing: border-box;
+}
+
+/* Styles spécifiques pour l'interface de jeu */
+.home-container {
+  width: 100%;
+  max-width: 1200px;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.pokemon-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
 }

@@ -286,16 +286,17 @@ useEffect(() => {
     
         <div className="main-content">
           
-        <SearchBar onSearch={handleSearch} onCreate={() => setShowModal(true)} />
+        <SearchBar 
+          onSearch={handleSearch} 
+          onCreate={() => setShowModal(true)}
+          onStartGame={() => setGameStarted(true)} 
+        />
+
 
     
           {successMessage && <div className="success-message">{successMessage}</div>}
     
-          {!gameStarted && (
-            <button onClick={() => setGameStarted(true)} className="start-game-button">
-              Commencer le jeu
-            </button>
-          )}
+          
           {gameStarted && (
             <div className="timer">⏱️ Temps restant : {formatTime(timeLeft)}</div>
           )}
