@@ -2,6 +2,19 @@ import { Link } from "react-router-dom";
 import "./index.css";
 
 function PokemonCard({ id, name, tabDeTypes, image, attack, defense, hp }) {
+  const handleAttack = () => {
+    const attaque = Math.floor(Math.random() * 30) + 10; // attaque entre 10 et 39
+    const defenseAdverse = Math.floor(Math.random() * 20) + 5; // défense entre 5 et 24
+    const degats = Math.max(0, attaque - defenseAdverse);
+
+    alert(
+      `${name.french} attaque !\n` +
+      `Puissance d'attaque : ${attaque}\n` +
+      `Défense adverse : ${defenseAdverse}\n` +
+      `Dégâts infligés : ${degats}`
+    );
+  };
+
   return (
     <div className="pokemon-card">
       <img src={image} alt={name.french} className="pokemon-image" />
@@ -14,8 +27,11 @@ function PokemonCard({ id, name, tabDeTypes, image, attack, defense, hp }) {
           <li><strong>HP:</strong> {hp}</li>
         </ul>
       </div>
+
       {/* Bouton Attaquer */}
-      <button onClick={() => alert(`${name.french} attaque !`)}>Attaquer</button>
+      <button onClick={handleAttack}>
+        Attaquer
+      </button>
     </div>
   );
 }
