@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import "./index.css";
 
-function SearchBar({ onSearch, onCreate, onStartGame }) {
+function SearchBar({ onSearch, onCreate, onStartGame,onShowCards, gameStarted  }) {
   const [search, setSearch] = useState("");
   const [selectedTypes, setSelectedTypes] = useState([]);
   
@@ -86,6 +86,17 @@ function SearchBar({ onSearch, onCreate, onStartGame }) {
         <button className="start-game-button" onClick={onStartGame}>
           Commencer le jeu
         </button>
+        <button 
+          className="show-cards-button" 
+          onClick={onShowCards}
+          disabled={gameStarted}
+        >
+          Afficher les cartes
+        </button>
+
+
+
+
       </div>
     </div>
   );

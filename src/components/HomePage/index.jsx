@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getAllPokemons, deletePokemon, updatePokemon } from "../../services/api";
-import SearchBar from "../SearchBar";
+import SearchBar from "../searchBar";
 import PokemonCard from "../pokemonCard";
 import CreatePokemon from "../CreatePokemon";
 import Select from "react-select"; 
@@ -40,8 +40,14 @@ function HomePage() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [pokemonToDelete, setPokemonToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [notification, setNotification] = useState("");
+  const [notificationType, setNotificationType] = useState("attack");
+  const [allCardsFlipped, setAllCardsFlipped] = useState(false);
+  const [forceFlip, setForceFlip] = useState(false);
+
   const [showUserMenu, setShowUserMenu] = useState(false);
- 
+  const [showLevelModal, setShowLevelModal] = useState(false);
+
   const location = useLocation();
   const navigate = useNavigate();
   const [foundPokemons, setFoundPokemons] = useState([]);
@@ -186,13 +192,37 @@ useEffect(() => {
   }
 }, [gameOver]);
 
+const handleStartGame = () => {
+  setShowLevelModal(true);
+};
 
+const startGameWithLevel = (level) => {
+  if (level === 1) {
+    setTimeLeft(300); // 5 minutes
+  } else if (level === 2) {
+    setTimeLeft(180); // 3 minutes
+  } else if (level === 3) {
+    setTimeLeft(120); // 2 minutes
+  }
+  setGameStarted(true);
+  setShowLevelModal(false); // 🔥 Ferme le modal après avoir choisi
+};
+
+ 
   const filteredPokemons = pokemons.filter((pokemon) => {
     const matchesSearch = pokemon.name?.french?.toLowerCase().includes(search.toLowerCase());
     const matchesType = selectedTypes.length === 0 || selectedTypes.some((type) => pokemon.type.includes(type));
     return matchesSearch && matchesType;
   });
-
+  
+  const showNotification = (message, type = "attack") => {
+    setNotification(message);
+    setNotificationType(type);
+    setTimeout(() => {
+      setNotification("");
+    }, 3000);
+  };
+  
   const handleUpdate = async (e) => {
     e.preventDefault();
     const updatedData = {
@@ -287,13 +317,13 @@ useEffect(() => {
         <div className="main-content">
           
         <SearchBar 
-          onSearch={handleSearch} 
-          onCreate={() => setShowModal(true)}
-          onStartGame={() => setGameStarted(true)} 
-        />
+        onSearch={handleSearch}
+        onCreate={() => setShowModal(true)}
+        onStartGame={handleStartGame}
+        onShowCards={() => setAllCardsFlipped(prev => !prev)}
+        gameStarted={gameStarted}
+      />
 
-
-    
           {successMessage && <div className="success-message">{successMessage}</div>}
     
           
@@ -304,18 +334,21 @@ useEffect(() => {
           <div className="pokemon-list">
             {filteredPokemons.map((pokemon) => (
               <FlippablePokemonCard
-                key={pokemon._id}
-                pokemon={pokemon}
-                foundPokemons={foundPokemons}
-                onChooseAction={(p, openModal = false) => {
-                  if (!foundPokemons.includes(p._id)) {
-                    setFoundPokemons((prev) => [...prev, p._id]);
-                  }
-                  if (openModal) {
-                    setSelectedPokemon(p);
-                  }
-                }}
-              />
+              key={pokemon._id}
+              pokemon={pokemon}
+              foundPokemons={foundPokemons}
+              onChooseAction={(p, openModal = false) => {
+                if (!foundPokemons.includes(p._id)) {
+                  setFoundPokemons((prev) => [...prev, p._id]);
+                }
+                if (openModal) {
+                  setSelectedPokemon(p);
+                }
+              }}
+              onNotify={showNotification}
+              forceFlip={allCardsFlipped}   
+            />
+            
             ))}
     
             {gameOver && (
@@ -328,15 +361,34 @@ useEffect(() => {
               </div>
             )}
     
-            {gameWon && (
-              <div className="modal-overlay">
-                <div className="modal">
-                  <h2>🎉 Félicitations !</h2>
-                  <p>Vous avez trouvé tous les Pokémon !</p>
-                  <button onClick={() => window.location.reload()}>Rejouer</button>
+              {gameWon && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <h2>🎉 Félicitations !</h2>
+                <p>Vous avez trouvé tous les Pokémon !</p>
+                <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
+                  <button 
+                    style={{ backgroundColor: "gold", padding: "0.5rem 1rem", fontWeight: "bold", flex: 1 }} 
+                    onClick={() => window.location.reload()}
+                  >
+                    Rejouer
+                  </button>
+                  <button 
+                    style={{ backgroundColor: "#ccc", padding: "0.5rem 1rem", fontWeight: "bold", flex: 1 }} 
+                    onClick={() => {
+                      setGameWon(false);          // 🔥 Ferme le modal
+                      setFoundPokemons([]);        // 🔥 Remet la liste vide
+                      setGameStarted(false);       // 🔥 Arrête la partie
+                    }}
+                  >
+                    Annuler
+                  </button>
+
                 </div>
               </div>
-            )}
+            </div>
+          )}
+
           </div>
     
           {showModal && (
@@ -461,6 +513,38 @@ useEffect(() => {
           )}
     
         </div>
+
+        {notification && (
+          <div className={`notification ${notificationType}`}>
+            {notification.split('\n').map((line, index) => (
+              <div key={index}>{line}</div>
+            ))}
+          </div>
+        )}
+
+          {showLevelModal && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <h2>Choisissez votre niveau</h2>
+                <div style={{ display: "flex", flexDirection: "column", gap: "1rem", marginTop: "1rem" }}>
+                  <button onClick={() => startGameWithLevel(1)} style={{ backgroundColor: "lightgreen", padding: "1rem" }}>
+                    Niveau 1 : Facile (5 min)
+                  </button>
+                  <button onClick={() => startGameWithLevel(2)} style={{ backgroundColor: "orange", padding: "1rem" }}>
+                    Niveau 2 : Moyen (3 min)
+                  </button>
+                  <button onClick={() => startGameWithLevel(3)} style={{ backgroundColor: "crimson", color: "white", padding: "1rem" }}>
+                    Niveau 3 : Difficile (2 min)
+                  </button>
+                  <button onClick={() => setShowLevelModal(false)} style={{ marginTop: "1rem" }}>
+                    Annuler
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+
       </div>
     );
   

@@ -366,3 +366,17 @@ button:contains("Commencer le jeu") {
   width: 100%;
   box-sizing: border-box;
 }
+
+.show-cards-button {
+  background-color: #4CAF50; /* Vert sympa */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  margin-top: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.show-cards-button:hover {
+  background-color: #45a049;
+}

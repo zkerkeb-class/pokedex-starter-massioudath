@@ -283,7 +283,23 @@ body {
 .delete-btn:hover {
   background-color: #d32f2f;
 }
+.user-profile {
+  position: relative; /* Important pour positionner le menu par rapport à l'avatar */
+}
 
+.user-menu {
+  position: absolute;
+  top: 100%; /* Juste en dessous de l'avatar */
+  left: 50%;
+  transform: translateX(-50%); /* Centre horizontalement */
+  background-color: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  z-index: 10;
+  min-width: 180px;
+  text-align: center;
+}
 /* Info utilisateur */
 .user-info {
   display: flex;
@@ -403,14 +419,17 @@ body {
 }
 
 .sidebar {
-  width: 80px;
+  width: 150px;
   background-color: var(--primary-dark);
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 1rem 0;
   border-right: 1px solid var(--primary);
+  position: relative; /* AJOUTE ceci pour que .user-menu se base aussi sur .sidebar */
+  overflow: visible;  /* Permet au menu de dépasser la sidebar sans être caché */
 }
+
 
 .main-content {
   flex: 1;
@@ -488,4 +507,43 @@ body {
     overflow-x: auto;
     padding-bottom: 10px;
   }
+}
+
+.notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  max-width: 300px;
+  background: #4caf50; /* vert par défaut */
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  font-size: 14px;
+  z-index: 9999;
+  animation: fadeInOut 3s forwards;
+  white-space: pre-line;
+}
+
+.notification.attack {
+  background: #f44336; /* rouge pour attaque */
+}
+
+.notification.defense {
+  background: #2196f3; /* bleu pour défense */
+}
+
+.notification.heal {
+  background: #4caf50; /* vert pour soin */
+}
+
+.notification.ko {
+  background: #9c27b0; /* violet pour KO */
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(20px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(20px); }
 }
