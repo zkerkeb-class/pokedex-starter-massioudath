@@ -12,23 +12,33 @@ const LoginUser = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    
+    if (!email.includes('@')) {
+      setError('Veuillez entrer une adresse email valide.');
+      return;
+    }
+  
+    if (password.length < 6) {
+      setError('Le mot de passe doit contenir au moins 6 caractères.');
+      return;
+    }
+  
     try {
       const res = await axios.post('http://localhost:3000/api/auth/login', { email, password });
-
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('email', email);
-
-      setShowSuccessModal(true); // ➔ Affiche le modal de succès
-      
+  
+      setShowSuccessModal(true);
       setTimeout(() => {
         setShowSuccessModal(false);
-        navigate('/'); // ➔ Redirige proprement après 1.5 secondes
+        navigate('/');
       }, 1500);
     } catch (err) {
       console.error('Erreur de connexion :', err);
       setError('Identifiants incorrects ou serveur inaccessible');
     }
   };
+  
 
   const goToRegister = () => {
     navigate('/register');
