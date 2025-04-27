@@ -1,0 +1,119 @@
+/* Ajustement du conteneur principal de la page */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--primary-light);
+  margin: 0;
+  padding: 20px;
+}
+
+/* Conteneur de la page login - ajusté pour être plus grand et centré */
+.login-container {
+  width: 100%;
+  max-width: 600px;
+  min-height: 550px; /* ➡️ AJOUT : pour forcer une plus grande hauteur */
+  margin: 0 auto;
+  padding: 4rem;
+  background-color: var(--card-bg);
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  border: 2px solid var(--primary);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* ➡️ Centre verticalement le contenu */
+}
+
+
+/* Titre de la page */
+.login-container h1 {
+  color: var(--primary-dark);
+  font-size: 2.2rem;
+  margin-bottom: 2.5rem;
+  font-weight: bold;
+}
+
+/* Formulaire - assurez-vous qu'il utilise tout l'espace disponible */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; /* avant 1.8rem → espacement plus généreux */
+  width: 100%;
+}
+
+/* Champs de saisie - plus grands et plus visibles */
+.login-form input {
+  display: block;
+  width: 100%;
+  padding: 1.2rem 1.4rem; /* un peu plus gros */
+  font-size: 1.1rem;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background-color: var(--light);
+  transition: border-color 0.3s, box-shadow 0.3s;
+  box-sizing: border-box;
+}
+
+/* Bouton de connexion - plus grand et plus visible */
+.login-form button {
+  padding: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: var(--primary); /* Couleur bleue principale */
+  color: white;
+  border: none;
+  border-radius: 10px;
+  transition: background-color 0.3s, transform 0.2s;
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.login-form button, .register-button {
+  padding: 1.2rem;
+  font-size: 1.3rem;
+  font-weight: bold;
+  cursor: pointer;
+  background-color: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  width: 100%;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.login-form button:hover, .register-button:hover {
+  background-color: var(--primary-dark);
+  transform: scale(1.03);
+}
+
+/* Responsive - pour s'assurer que ça fonctionne sur mobile aussi */
+@media (max-width: 600px) {
+  .login-container {
+    padding: 2.5rem;
+    max-width: 90%;
+  }
+}
+
+/* Bouton S'inscrire */
+.register-button {
+  margin-top: 1rem;
+  padding: 1rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  background-color: var(--primary); /* Même bleu que Connexion */
+  color: white;
+  border: none;
+  border-radius: 10px;
+  width: 100%;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+
+.register-button:hover {
+  background-color: var(--primary-dark); /* Même survol */
+  transform: scale(1.02);
+}

@@ -1,0 +1,102 @@
+/* FlippablePokemonCard component styles */
+.flippable-card-wrapper {
+  width: 220px;
+  margin: 1rem;
+  perspective: 1000px;
+  position: relative;
+}
+
+.flippable-card {
+  width: 100%;
+  height: 340px;
+  position: relative;
+}
+
+.flippable-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease-in-out;
+}
+
+.flippable-card-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* Important pour éviter le débordement */
+}
+
+.card-front {
+  background-color: #ffd6eb;
+  z-index: 1;
+}
+
+.card-back {
+  background-color: #ffa726;
+  transform: rotateY(180deg);
+  z-index: 2;
+}
+
+/* Ajustements pour le contenu du PokemonCard */
+.pokemon-card-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Assurez-vous que le PokemonCard reste dans son conteneur */
+.pokemon-card-container > * {
+  max-width: 100%;
+  max-height: 100%;
+  transform: scale(0.95); /* Légèrement plus petit pour éviter les débordements */
+}
+
+.sparkle-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  background-image: radial-gradient(white 1px, transparent 1px),
+                   radial-gradient(#fff176 1px, transparent 1px);
+  background-size: 10px 10px;
+  animation: sparkle 1s ease-out;
+  z-index: 10;
+  border-radius: 12px;
+}
+
+@keyframes sparkle {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2);
+  }
+}
+
+/* Assurez-vous que votre pokemon-list dans HomePage utilise ce style */
+.pokemon-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}

@@ -1,0 +1,549 @@
+/* Palette de couleurs */
+:root {
+  --primary: #4a6baf;       /* Bleu Pokémon */
+  --primary-light: #dbe6ff; /* Bleu clair */
+  --primary-dark: #2a4b8f;  /* Bleu foncé */
+  --secondary: #ffcb05;     /* Jaune Pokémon */
+  --secondary-dark: #e6b400;/* Jaune foncé */
+  --accent: #ff5350;        /* Rouge Pokémon */
+  --light: #f8f9fd;         /* Blanc cassé */
+  --dark: #333333;          /* Gris foncé */
+  --card-bg: #ffffff;       /* Blanc */
+  --success: #4caf50;       /* Vert */
+  --danger: #f44336;        /* Rouge */
+}
+
+/* Fond principal */
+body {
+  background-color: var(--primary-light);
+  color: var(--dark);
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Container général de la page */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  background-color: var(--primary-light);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* La liste des cartes Pokémon */
+.pokemon-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 1rem;
+  max-width: 100%;
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+/* Style des cartes Pokémon */
+.pokemon-card {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 220px;
+  border: 2px solid var(--primary);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.pokemon-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Image des Pokémon */
+.pokemon-image {
+  max-width: 100%;
+  height: 120px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+/* Informations des Pokémon */
+.pokemon-info {
+  background-color: var(--primary-light);
+  padding: 10px;
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.pokemon-info p {
+  margin: 5px 0;
+  font-weight: bold;
+  color: var(--dark);
+}
+
+.pokemon-info strong {
+  color: var(--primary-dark);
+}
+
+/* Bouton Attaquer */
+.pokemon-card button {
+  background-color: var(--accent);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  width: 100%;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.pokemon-card button:hover {
+  background-color: #e64946;
+  transform: scale(1.02);
+}
+
+/* Barre de recherche et filtres */
+.search-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 0 20px;
+}
+
+.search-create-container {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Input de recherche */
+.search-container input {
+  padding: 10px 15px;
+  border-radius: 20px;
+  border: 1px solid var(--primary);
+  width: 70%;
+  font-size: 16px;
+  background-color: var(--light);
+}
+
+/* Bouton de création */
+.create-button {
+  background-color: var(--secondary);
+  color: var(--dark);
+  padding: 8px 18px;
+  font-size: 14px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.create-button:hover {
+  background-color: var(--secondary-dark);
+  transform: scale(1.05);
+}
+
+/* Filtres par type */
+.filter-container {
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.filter-container h3 {
+  color: var(--primary-dark);
+  margin-bottom: 10px;
+}
+
+.filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.filter-button {
+  background-color: var(--primary-light);
+  color: var(--primary-dark);
+  border: 1px solid var(--primary);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-button:hover,
+.filter-button.active {
+  background-color: var(--primary);
+  color: white;
+}
+
+/* Style pour les cartes retournables */
+.flippable-card {
+  width: 220px;
+  height: 340px;
+  perspective: 1000px;
+  margin: 1rem;
+  cursor: pointer;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.flippable-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease-in-out;
+}
+
+.flippable-card-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid var(--primary);
+}
+
+.card-front {
+  background-color: var(--card-bg);
+  z-index: 1;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: var(--primary-dark);
+}
+
+.card-back {
+  background-color: var(--primary-light);
+  transform: rotateY(180deg);
+  z-index: 0;
+}
+
+/* Boutons d'action */
+.action-buttons {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+.action-button {
+  padding: 8px 15px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: bold;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background-color: var(--secondary);
+  color: var(--dark);
+}
+
+.edit-btn:hover {
+  background-color: var(--secondary-dark);
+}
+
+.delete-btn {
+  background-color: var(--danger);
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #d32f2f;
+}
+.user-profile {
+  position: relative; /* Important pour positionner le menu par rapport à l'avatar */
+}
+
+.user-menu {
+  position: absolute;
+  top: 100%; /* Juste en dessous de l'avatar */
+  left: 50%;
+  transform: translateX(-50%); /* Centre horizontalement */
+  background-color: white;
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  z-index: 10;
+  min-width: 180px;
+  text-align: center;
+}
+/* Info utilisateur */
+.user-info {
+  display: flex;
+  justify-content: flex-end; /* Aligne à droite au lieu de center */
+  margin-bottom: 1.5rem;
+  width: 100%;
+  position: relative; /* Pour positionner correctement le dropdown */
+}
+
+.user-details {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: var(--card-bg);
+  padding: 0.8rem 1.2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: absolute; /* Position absolue pour le dropdown */
+  right: 20px; /* Distance depuis la droite */
+  top: 100%; /* Positionne sous l'icône */
+  z-index: 100; /* S'assure qu'il apparaît au-dessus des autres éléments */
+  margin-top: 5px; /* Petit espace entre l'icône et le dropdown */
+}
+.profile-icon-container {
+  position: relative;
+  cursor: pointer;
+}
+.avatar {
+  background-color: var(--primary-dark);
+  color: white;
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+
+.user-email {
+  flex-grow: 1;
+  margin: 0;
+  padding: 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.logout-button {
+  margin: 0;
+  padding: 8px 12px;
+  background-color: #ff5350;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.logout-button:hover {
+  background-color: #e64946;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: var(--card-bg);
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+  width: 400px;
+  border: 2px solid var(--primary);
+}
+
+.modal img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  margin-bottom: 20px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: space-evenly;
+  margin-top: 20px;
+}
+
+.modal-btn {
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: 0.3s;
+  width: 30%;
+  border: none;
+  font-weight: bold;
+}
+
+/* Layout principal */
+.home-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 150px;
+  background-color: var(--primary-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0;
+  border-right: 1px solid var(--primary);
+  position: relative; /* AJOUTE ceci pour que .user-menu se base aussi sur .sidebar */
+  overflow: visible;  /* Permet au menu de dépasser la sidebar sans être caché */
+}
+
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
+/* Message de succès */
+.success-message {
+  background-color: var(--success);
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 16px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.success-button {
+  background-color: var(--secondary);
+  color: var(--dark);
+  font-weight: bold;
+  border: none;
+  padding: 0.4rem 1.2rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  margin-top: 1rem;
+  width: auto;
+  display: inline-block;
+  min-width: 120px;
+  text-align: center;
+}
+
+/* Responsivité */
+@media (max-width: 1024px) {
+  .flippable-card {
+    width: 200px;
+    height: 320px;
+  }
+}
+
+@media (max-width: 768px) {
+  .flippable-card {
+    width: 180px;
+    height: 300px;
+  }
+  
+  .pokemon-list {
+    gap: 1rem;
+  }
+  
+  .search-create-container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .search-container input {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .flippable-card {
+    width: 160px;
+    height: 280px;
+  }
+  
+  .pokemon-list {
+    gap: 0.8rem;
+  }
+  
+  .filter-buttons {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding-bottom: 10px;
+  }
+}
+
+.notification {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  max-width: 300px;
+  background: #4caf50; /* vert par défaut */
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  font-size: 14px;
+  z-index: 9999;
+  animation: fadeInOut 3s forwards;
+  white-space: pre-line;
+}
+
+.notification.attack {
+  background: #f44336; /* rouge pour attaque */
+}
+
+.notification.defense {
+  background: #2196f3; /* bleu pour défense */
+}
+
+.notification.heal {
+  background: #4caf50; /* vert pour soin */
+}
+
+.notification.ko {
+  background: #9c27b0; /* violet pour KO */
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(20px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(20px); }
+}

@@ -1,0 +1,382 @@
+/* SearchBar.css avec correctifs complets */
+.filter-container {
+  background: linear-gradient(135deg, #fff2fc 0%, #e0f2ff 100%);
+  border-radius: 16px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+  width: 100%;
+  max-width: 2000px;
+  box-sizing: border-box;
+}
+
+.search-input {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 24px;
+  padding: 0.6rem 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1.2rem;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+.search-input:focus-within {
+  border-color: #6a4cfc;
+  box-shadow: 0 4px 12px rgba(106, 76, 252, 0.15);
+}
+
+.search-input input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 0.5rem;
+  font-size: 1rem;
+  color: #333;
+  background: transparent;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.search-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 10px;
+  color: #999;
+  flex-shrink: 0;
+}
+
+.clear-search {
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 5px;
+  flex-shrink: 0;
+}
+
+.clear-search:hover {
+  color: #333;
+}
+
+.filter-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.filter-header span {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #5c2a91;
+}
+
+.reset-filters {
+  background-color: #f5f5f5;
+  color: #666;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.reset-filters:hover {
+  background-color: #e0e0e0;
+  color: #444;
+}
+
+.reset-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Style des options de filtre individuelles */
+.filter-option {
+  position: relative;
+  box-sizing: border-box;
+}
+
+.filter-option input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.filter-option label {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  background-color: white;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+/* Style spécifique pour chaque type de Pokémon */
+.filter-option.fire label { border-color: #ff7b25; }
+.filter-option.water label { border-color: #5090d6; }
+.filter-option.grass label { border-color: #78c850; }
+.filter-option.electric label { border-color: #f9cf30; }
+.filter-option.psychic label { border-color: #f95587; }
+.filter-option.ice label { border-color: #98d8d8; }
+.filter-option.dragon label { border-color: #6f35fc; }
+.filter-option.dark label { border-color: #705746; }
+.filter-option.poison label { border-color: #a33ea1; }
+.filter-option.bug label { border-color: #a8b820; }
+.filter-option.flying label { border-color: #a890f0; }
+.filter-option.normal label { border-color: #a8a878; }
+.filter-option.ground label { border-color: #e0c068; }
+.filter-option.fairy label { border-color: #ee99ac; }
+.filter-option.fighting label { border-color: #c03028; }
+.filter-option.rock label { border-color: #b8a038; }
+.filter-option.steel label { border-color: #b8b8d0; }
+.filter-option.ghost label { border-color: #705898; }
+
+/* Style quand l'option est sélectionnée */
+.filter-option input[type="checkbox"]:checked + label {
+  color: white;
+  font-weight: 600;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Background color quand sélectionné */
+.filter-option.fire input[type="checkbox"]:checked + label { background-color: #ff7b25; }
+.filter-option.water input[type="checkbox"]:checked + label { background-color: #5090d6; }
+.filter-option.grass input[type="checkbox"]:checked + label { background-color: #78c850; }
+.filter-option.electric input[type="checkbox"]:checked + label { background-color: #f9cf30; color: #333; }
+.filter-option.psychic input[type="checkbox"]:checked + label { background-color: #f95587; }
+.filter-option.ice input[type="checkbox"]:checked + label { background-color: #98d8d8; color: #333; }
+.filter-option.dragon input[type="checkbox"]:checked + label { background-color: #6f35fc; }
+.filter-option.dark input[type="checkbox"]:checked + label { background-color: #705746; }
+.filter-option.poison input[type="checkbox"]:checked + label { background-color: #a33ea1; }
+.filter-option.bug input[type="checkbox"]:checked + label { background-color: #a8b820; }
+.filter-option.flying input[type="checkbox"]:checked + label { background-color: #a890f0; }
+.filter-option.normal input[type="checkbox"]:checked + label { background-color: #a8a878; }
+.filter-option.ground input[type="checkbox"]:checked + label { background-color: #e0c068; color: #333; }
+.filter-option.fairy input[type="checkbox"]:checked + label { background-color: #ee99ac; }
+.filter-option.fighting input[type="checkbox"]:checked + label { background-color: #c03028; }
+.filter-option.rock input[type="checkbox"]:checked + label { background-color: #b8a038; }
+.filter-option.steel input[type="checkbox"]:checked + label { background-color: #b8b8d0; color: #333; }
+.filter-option.ghost input[type="checkbox"]:checked + label { background-color: #705898; }
+
+/* Hover effect */
+.filter-option label:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .filter-options {
+    gap: 0.4rem;
+  }
+  
+  .filter-option label {
+    padding: 0.3rem 0.7rem;
+    font-size: 0.8rem;
+  }
+  
+  .search-input {
+    padding: 0.5rem 0.8rem;
+  }
+  
+  .filter-header {
+    margin-bottom: 0.7rem;
+  }
+  
+  .filter-header span {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-container {
+    padding: 0.8rem;
+    border-radius: 12px;
+  }
+  
+  .filter-options {
+    gap: 0.3rem;
+  }
+  
+  .filter-option label {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+  
+  .reset-filters {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Container pour les boutons d'action */
+.create-button-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Bouton "Créer un Pokémon" */
+.create-button,
+button:nth-child(1) {
+  background-color: #4a6baf !important; /* Bleu Pokémon */
+  color: white !important;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(74, 107, 175, 0.3);
+}
+
+.create-button:hover,
+button:nth-child(1):hover {
+  background-color: #3a5b9f !important;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(74, 107, 175, 0.4);
+}
+
+/* Bouton "Commencer le jeu" */
+.start-game-button,
+button:nth-child(2) {
+  background-color: #ffcb05 !important; /* Jaune Pokémon */
+  color: #333 !important; /* Texte foncé pour contraste */
+  border: none;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(255, 203, 5, 0.3);
+}
+
+.start-game-button:hover,
+button:nth-child(2):hover {
+  background-color: #f5c000 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(255, 203, 5, 0.4);
+}
+
+/* Animation subtile au clic */
+.create-button:active, 
+.start-game-button:active,
+button:nth-child(1):active,
+button:nth-child(2):active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Sélecteurs alternatifs pour cibler les boutons par texte */
+button[aria-label="Créer un Pokémon"], 
+button:contains("Créer un Pokémon") {
+  background-color: #4a6baf !important;
+  color: white !important;
+}
+
+button[aria-label="Commencer le jeu"], 
+button:contains("Commencer le jeu") {
+  background-color: #ffcb05 !important;
+  color: #333 !important;
+}
+
+/* Ciblage direct par sélecteur d'enfant */
+.filter-container .create-button-container button:nth-child(1) {
+  background-color: #4a6baf !important; /* Bleu pour "Créer un Pokémon" */
+  color: white !important;
+}
+
+.filter-container .create-button-container button:nth-child(2) {
+  background-color: #ffcb05 !important; /* Jaune pour "Commencer le jeu" */
+  color: #333 !important;
+}
+
+/* Responsive pour les boutons */
+@media (max-width: 480px) {
+  .create-button-container {
+    justify-content: center;
+    flex-direction: column-reverse; /* Le bouton de jeu apparaît en premier */
+    width: 100%;
+  }
+  
+  .create-button, 
+  .start-game-button,
+  button:nth-child(1),
+  button:nth-child(2) {
+    width: 100%;
+    padding: 0.6rem 1.2rem;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Global pour éviter les débordements */
+* {
+  box-sizing: border-box;
+}
+
+/* Styles spécifiques pour l'interface de jeu */
+.home-container {
+  width: 100%;
+  max-width: 1200px;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.pokemon-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.show-cards-button {
+  background-color: #4CAF50; /* Vert sympa */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  margin-top: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.show-cards-button:hover {
+  background-color: #45a049;
+}
