@@ -3,9 +3,31 @@ import { useState, useEffect } from "react";
 import "./index.css";
 import PokemonCard from "../pokemonCard";
 
+/**
+ * Composant représentant une carte Pokémon retournable (flippable).
+ * 
+ * - Premier clic : retourne la carte et marque le Pokémon comme découvert.
+ * - Deuxième clic : déclenche l'action `onChooseAction`.
+ *
+ * @param {Object} props
+ * @param {Object} props.pokemon - Données du Pokémon affiché.
+ * @param {function} props.onChooseAction - Fonction appelée au clic pour choisir une action (ouvrir modale...).
+ * @param {Array<string>} props.foundPokemons - Liste des IDs des Pokémon déjà découverts.
+ * @param {function} props.onNotify - Fonction appelée pour notifier d'un événement spécial (optionnel).
+ * @param {boolean} props.forceFlip - Force l'état retourné (flip) de la carte depuis l'extérieur.
+ */
+
+
+
 function FlippablePokemonCard({ pokemon, onChooseAction, foundPokemons, onNotify,forceFlip  }) {
   const [flipped, setFlipped] = useState(false);
   const [actionReady, setActionReady] = useState(false);
+
+    /**
+   * Gère le clic sur la carte.
+   * - Premier clic : retourne la carte et signale la découverte.
+   * - Deuxième clic (et suivants) : ouvre directement une action (modale, etc.).
+   */
 
   const handleClick = () => {
     if (!flipped) {
@@ -20,6 +42,12 @@ function FlippablePokemonCard({ pokemon, onChooseAction, foundPokemons, onNotify
     }
   };
   
+
+   /**
+   * Met à jour l'état retourné (flipped) si la prop `forceFlip` change.
+   */ 
+
+   
   useEffect(() => {
     setFlipped(forceFlip);
 

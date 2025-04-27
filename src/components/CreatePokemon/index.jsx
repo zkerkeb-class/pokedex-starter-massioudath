@@ -3,6 +3,9 @@ import Select from "react-select";
 import { createPokemon } from "../../services/api";
 import "./index.css";
 
+/**
+ * Liste des types de Pokémon disponibles pour la sélection.
+ */
 const POKEMON_TYPES = [
   { label: "Feu", value: "Fire" },
   { label: "Eau", value: "Water" },
@@ -24,6 +27,14 @@ const POKEMON_TYPES = [
   { label: "Normal", value: "Normal" },
 ];
 
+/**
+ * Composant permettant d'ajouter un nouveau Pokémon via un formulaire dans une modale.
+ *
+ * @param {Object} props
+ * @param {function} props.onClose - Fonction appelée pour fermer la modale.
+ * @param {function} props.onCreated - Fonction appelée après la création du Pokémon.
+ */
+
 function CreatePokemon({ onClose, onCreated }) {
   const [formData, setFormData] = useState({
     name: "",
@@ -32,16 +43,34 @@ function CreatePokemon({ onClose, onCreated }) {
   });
   const [successModal, setSuccessModal] = useState(false);
 
+  /**
+   * Gère le changement dans les champs texte du formulaire.
+   * 
+   * @param {React.ChangeEvent<HTMLInputElement>} e
+   */ 
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
+
+
+    /**
+   * Gère la sélection des types de Pokémon dans le Select.
+   * 
+   * @param {Array} selectedOptions - Liste des options sélectionnées.
+   */
 
   const handleTypeChange = (selectedOptions) => {
     const types = selectedOptions.map((option) => option.value);
     setFormData({ ...formData, type: types });
   };
 
+    /**
+   * Soumet le formulaire pour créer un nouveau Pokémon.
+   * 
+   * @param {React.FormEvent<HTMLFormElement>} e
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -77,6 +106,13 @@ function CreatePokemon({ onClose, onCreated }) {
     }
   };
 
+   /**
+   * Annule la création et ferme la modale.
+   * 
+   * @param {React.MouseEvent<HTMLButtonElement>} e
+   */
+
+   
   const handleCancel = (e) => {
     e.preventDefault();
     onClose();

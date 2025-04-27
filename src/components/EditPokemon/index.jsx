@@ -3,6 +3,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { getPokemonById, updatePokemon } from "../../services/api";
 import "./index.css";
 
+
+
+/**
+ * Composant permettant de modifier un Pokémon existant.
+ */
+
 function EditPokemon() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -12,6 +18,11 @@ function EditPokemon() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [mongoId, setMongoId] = useState("");
+
+
+   /**
+   * Récupère les données du Pokémon à modifier dès que l'ID est disponible.
+   */ 
 
   useEffect(() => {
     async function fetchData() {
@@ -36,10 +47,25 @@ function EditPokemon() {
   }, [id]);
   
 
+
+   /**
+   * Met à jour les données du formulaire quand l'utilisateur édite un champ.
+   * 
+   * @param {React.ChangeEvent<HTMLInputElement>} e
+   */
+
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   
+
+   /**
+   * Soumet les modifications du Pokémon au serveur.
+   * 
+   * @param {React.FormEvent<HTMLFormElement>} e
+   */
+
   const handleSubmit = async (e) => { 
     e.preventDefault();
     
@@ -54,7 +80,7 @@ function EditPokemon() {
       type: formData.type
         .split(',')
         .map(t => t.trim())
-        .filter(t => t !== ""), // ✅ corrige l'erreur mongoose
+        .filter(t => t !== ""), 
       image: formData.image,
       stats: pokemon.stats, // obligatoire pour éviter les erreurs de validation
       evolutions: pokemon.evolutions || []
@@ -63,7 +89,7 @@ function EditPokemon() {
     
     
     
-    // Supprime les propriétés qui pourraient causer des problèmes
+    
     delete updatedPokemon.__v;  // Supprime la version de mongoose si elle existe
     
     console.log("Données envoyées au serveur:", mongoId, updatedPokemon);

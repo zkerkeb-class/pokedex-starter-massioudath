@@ -1,9 +1,41 @@
 import { useState } from "react";
 import "./index.css";
 
+/**
+ * Composant représentant une carte Pokémon interactive.
+ *
+ * - Affiche les informations du Pokémon (nom, types, attaque, défense, HP).
+ * - Permet d'attaquer, de se défendre, ou de se soigner si le Pokémon est K.O.
+ * - Met à jour dynamiquement la barre de vie en fonction des actions.
+ * - Notifie les actions via le callback `onNotify`.
+ *
+ * @component
+ *
+ * @param {Object} props
+ * @param {number} props.id - Identifiant unique du Pokémon.
+ * @param {Object} props.name - Objet contenant les noms du Pokémon (`french`, `english`, etc.).
+ * @param {Array<string>} props.tabDeTypes - Liste des types du Pokémon.
+ * @param {string} props.image - URL de l'image du Pokémon.
+ * @param {number} props.attack - Valeur d'attaque du Pokémon.
+ * @param {number} props.defense - Valeur de défense du Pokémon.
+ * @param {number} props.hp - Points de vie de départ du Pokémon.
+ * @param {function} props.onNotify - Fonction pour envoyer des notifications d'actions (attaque, défense, soin, KO).
+ */
+
+
+
 function PokemonCard({ id, name, tabDeTypes, image, attack, defense, hp: initialHp, onNotify }) {
   const [currentHp, setCurrentHp] = useState(initialHp);
   const [isKO, setIsKO] = useState(false);
+
+
+  /**
+ * Gère l'action d'attaque :
+ * - Réduit les HP.
+ * - Simule une attaque et une défense pour calculer les dégâts.
+ * - Notifie l'action.
+ */
+
 
   const handleAttack = () => {
     setCurrentHp(prevHp => {
@@ -24,6 +56,13 @@ function PokemonCard({ id, name, tabDeTypes, image, attack, defense, hp: initial
     }
   };
 
+  /**
+ * Gère l'action de défense :
+ * - Récupère 5 HP si le Pokémon n'est pas K.O.
+ * - Notifie l'action.
+ */
+
+
   const handleDefense = () => {
     if (!isKO) {
       setCurrentHp(prevHp => Math.min(initialHp, prevHp + 5));
@@ -37,6 +76,15 @@ function PokemonCard({ id, name, tabDeTypes, image, attack, defense, hp: initial
     }
   };
 
+
+  /**
+ * Soigne le Pokémon s'il est K.O. :
+ * - Restaure les HP à leur valeur initiale.
+ * - Réinitialise l'état K.O.
+ * - Notifie l'action.
+ */
+
+
   const handleRevive = () => {
     setCurrentHp(initialHp);
     setIsKO(false);
@@ -44,6 +92,13 @@ function PokemonCard({ id, name, tabDeTypes, image, attack, defense, hp: initial
       onNotify(`${name.french} a été soigné et est de retour au combat !`, "heal");
     }
   };
+
+
+  /**
+ * Calcule le pourcentage de vie actuel par rapport aux HP initiaux.
+ *
+ * @returns {number} Pourcentage de vie restante.
+ */
 
   const getHealthPercentage = () => {
     return (currentHp / initialHp) * 100;

@@ -61,8 +61,28 @@ import EditPokemon from './components/EditPokemon';
 import LoginUser from './components/LoginUser';
 import RegisterUser from './components/RegisterUser';
 
+
+/**
+ * Composant principal de l'application.
+ *
+ * - Définit toutes les routes de l'application.
+ * - Gère la protection des routes : certaines pages nécessitent un utilisateur connecté (token valide).
+ * - Redirige automatiquement vers la page de connexion si l'utilisateur n'est pas authentifié.
+ *
+ * @component
+ */
+
+
 function App() {
   const token = localStorage.getItem('token'); // 📦 On récupère le token
+
+
+  /**
+ * Si `token` est présent dans localStorage :
+ *    - Accès autorisé à HomePage, PokemonDetail, CreatePokemon, EditPokemon.
+ * Sinon :
+ *    - Redirection automatique vers la page de connexion (/login).
+ */
 
   return (
     <Router>

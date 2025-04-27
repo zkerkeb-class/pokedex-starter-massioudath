@@ -1,4 +1,6 @@
-// HomePage.jsx corrigé avec interaction par double clic uniquement
+
+
+
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getAllPokemons, deletePokemon, updatePokemon } from "../../services/api";
@@ -9,11 +11,32 @@ import Select from "react-select";
 import FlippablePokemonCard from "../FlippablePokemonCard";
 import "./index.css";
 
+/**
+ * Page d'accueil affichant la liste des Pokémon avec fonctionnalités :
+ * 
+ * - Recherche par nom et par type
+ * - Création d'un nouveau Pokémon
+ * - Modification et suppression d'un Pokémon
+ * - Système de jeu : trouver tous les Pokémon dans un temps limité
+ * - Gestion utilisateur (affichage email, déconnexion)
+ * - Notifications, timer, niveau de difficulté
+ *
+ * Fonctionnalités principales :
+ * - Double clic sur une carte pour choisir une action.
+ * - Sélection du niveau de jeu (facile, moyen, difficile).
+ * - Sons de victoire et de défaite.
+ * - Gestion de modales pour création, édition, suppression, et notifications.
+ * 
+ * @component
+ */
 
 
 function HomePage() {
 
   const [userEmail, setUserEmail] = useState(localStorage.getItem('email') || "");
+
+
+
 
   useEffect(() => {
     const email = localStorage.getItem('email');
@@ -64,6 +87,13 @@ function HomePage() {
     { label: "Glace", value: "Ice" }, { label: "Fée", value: "Fairy" }, { label: "Normal", value: "Normal" },
   ];
   
+
+    /**
+ * Récupère tous les Pokémon à l'initialisation de la page.
+ * Utilise la pagination pour charger toutes les pages.
+ */
+
+
   useEffect(() => {
     async function fetchData() {
       let allPokemons = [];
@@ -91,6 +121,12 @@ function HomePage() {
   //Pour le timer décompte
 
  // Modifiez l'useEffect pour le timer afin de mieux gérer la condition de défaite
+
+ /**
+ * Démarre le compte à rebours si le jeu est lancé.
+ * Déclenche la défaite si le temps atteint zéro avant la victoire.
+ */
+
 useEffect(() => {
   if (!gameStarted || timeLeft <= 0 || gameWon) return;
 
@@ -114,8 +150,15 @@ useEffect(() => {
   return () => clearTimeout(timer);
 }, [gameStarted, timeLeft, gameWon, foundPokemons, pokemons]);
 
+
+
+
+/**
+ * Vérifie la condition de victoire en comparant le nombre de Pokémon trouvés.
+ */
+
+
 // Modifiez l'useEffect pour la vérification de victoire
-// Unique useEffect pour vérifier la condition de victoire
 // Unique useEffect pour vérifier la condition de victoire
 useEffect(() => {
   // Log pour débogage
@@ -138,7 +181,11 @@ useEffect(() => {
     }
   }
 }, [foundPokemons.length, pokemons.length, gameStarted, gameOver, gameWon]);
-// Ces deux useEffect sont déjà corrects pour jouer les sons
+
+/**
+ * Joue le son de victoire lorsqu'une victoire est détectée.
+ */
+
 useEffect(() => {
   if (gameWon) {
     const audio = new Audio("/sounds/victory.wav");
@@ -146,12 +193,25 @@ useEffect(() => {
   }
 }, [gameWon]);
 
+
+/**
+ * Joue le son de game over lorsqu'une défaite est détectée.
+ */
+
+
 useEffect(() => {
   if (gameOver) {
     const audio = new Audio("/sounds/gameover.wav");
     audio.play();
   }
 }, [gameOver]);
+
+/**
+ * Filtre les Pokémon en fonction du nom et des types sélectionnés.
+ * @param {string} searchTerm
+ * @param {Array<string>} typeFilters
+ */
+
     
   const handleSearch = (searchTerm, typeFilters) => {
     setSearch(searchTerm);
@@ -192,9 +252,21 @@ useEffect(() => {
   }
 }, [gameOver]);
 
+
+/**
+ * Lance le jeu en affichant la sélection du niveau.
+ */
+
 const handleStartGame = () => {
   setShowLevelModal(true);
 };
+
+
+/**
+ * Démarre le jeu avec un temps en fonction du niveau choisi.
+ * @param {number} level - Niveau de difficulté choisi (1, 2 ou 3).
+ */
+
 
 const startGameWithLevel = (level) => {
   if (level === 1) {
@@ -223,6 +295,13 @@ const startGameWithLevel = (level) => {
     }, 3000);
   };
   
+
+  /**
+ * Met à jour un Pokémon existant dans la base de données.
+ * @param {React.FormEvent<HTMLFormElement>} e
+ */
+
+
   const handleUpdate = async (e) => {
     e.preventDefault();
     const updatedData = {
@@ -244,6 +323,14 @@ const startGameWithLevel = (level) => {
       alert("Erreur lors de la mise à jour.");
     }
   };
+
+
+  /**
+ * Supprime un Pokémon de la base de données.
+ * @param {string} mongoId - ID MongoDB du Pokémon.
+ * @param {string} name - Nom du Pokémon à afficher en notification.
+ */
+
 
   const handleDelete = async (mongoId, name) => {
     try {
@@ -272,6 +359,11 @@ const startGameWithLevel = (level) => {
     const s = (seconds % 60).toString().padStart(2, "0");
     return `${m}:${s}`;
   };
+
+  /**
+ * Déconnecte l'utilisateur et vide les données locales.
+ */
+
   
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -326,6 +418,7 @@ const startGameWithLevel = (level) => {
 
           {successMessage && <div className="success-message">{successMessage}</div>}
     
+      { /* Chronomètre pour timer*/}
           
           {gameStarted && (
             <div className="timer">⏱️ Temps restant : {formatTime(timeLeft)}</div>
@@ -351,6 +444,8 @@ const startGameWithLevel = (level) => {
             
             ))}
     
+    {/* Modale de Game Over :Affichée lorsque le temps est écoulé sans avoir trouvé tous les Pokémon.
+    Déclenchée par : gameOver === true. */}
             {gameOver && (
               <div className="modal-overlay">
                 <div className="modal">
@@ -390,7 +485,10 @@ const startGameWithLevel = (level) => {
           )}
 
           </div>
-    
+
+        
+
+    {/* Affiche le formulaire pour ajouter un nouveau Pokémon déclenchée par : showModal === true.  */}
           {showModal && (
             <CreatePokemon
               onClose={() => setShowModal(false)}
@@ -398,6 +496,8 @@ const startGameWithLevel = (level) => {
             />
           )}
     
+    {/*  Modale de choix d'action sur un Pokémon :Propose de modifier ou de supprimer le Pokémon sélectionné.Déclenchée
+     par : selectedPokemon !== null. selectedPokemon && */}
           {selectedPokemon && (
             <div className="modal-overlay">
               <div className="modal">
@@ -434,6 +534,8 @@ const startGameWithLevel = (level) => {
             </div>
           )}
     
+    {/* Modale d'édition : Affiche un formulaire prérempli pour modifier un Pokémon.
+Déclenchée par : editModalOpen === true. */}
           {editModalOpen && (
             <div className="modal-overlay">
               <div className="modal">
@@ -469,7 +571,10 @@ const startGameWithLevel = (level) => {
               </div>
             </div>
           )}
-    
+  
+  {/* Modale de confirmation de suppression :Demande confirmation avant de supprimer
+   définitivement un Pokémon.Déclenchée par : showDeleteModal === true
+*/}
           {showDeleteModal && (
             <div className="modal-overlay">
               <div className="modal">
@@ -489,7 +594,9 @@ const startGameWithLevel = (level) => {
               </div>
             </div>
           )}
-    
+      {/* Modale de succès :Affiche un message de réussite après modification ou suppression.
+     Déclenchée par : successModalMessage ou showSuccessModal === true*/}
+     
           {successModalMessage && (
             <div className="modal-overlay">
               <div className="modal">

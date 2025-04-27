@@ -1,14 +1,41 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // ➔ Ajouté
-import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; 
 import './index.css';
+
+
+
+
+/**
+ * Composant d'inscription utilisateur.
+ *
+ * - Permet à un utilisateur de créer un nouveau compte avec email et mot de passe.
+ * - Valide le format de l'email et la longueur minimale du mot de passe.
+ * - Envoie une requête POST à l'API pour enregistrer l'utilisateur.
+ * - Stocke le token dans localStorage après inscription.
+ * - Affiche une modale de succès puis redirige vers la page de connexion.
+ *
+ * @component
+ */
+
+
 
 const RegisterUser = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [showSuccessModal, setShowSuccessModal] = useState(false);
-  const navigate = useNavigate(); // ➔ Ajouté
+  const navigate = useNavigate(); 
+
+  /**
+ * Gère l'inscription de l'utilisateur.
+ * - Valide les entrées avant l'envoi.
+ * - Appelle l'API pour enregistrer le nouvel utilisateur.
+ * - Stocke le token et affiche une modale de succès.
+ * - Redirige vers la page de connexion après 1,5 seconde.
+ *
+ * @param {React.FormEvent<HTMLFormElement>} e - L'événement de soumission du formulaire.
+ */
+
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -70,7 +97,9 @@ const RegisterUser = () => {
       </form>
       {error && <p className="error">{error}</p>}
 
-      {/* Modal de succès */}
+      
+
+      {/* Modale affichée après inscription réussie */}
       {showSuccessModal && (
         <div className="modal-overlay">
           <div className="modal">

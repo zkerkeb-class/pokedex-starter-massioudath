@@ -3,6 +3,18 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { getPokemonById, deletePokemon } from "../../services/api";
 import "./index.css";
 
+
+/**
+ * Composant d'affichage des détails d'un Pokémon.
+ *
+ * - Affiche les informations détaillées du Pokémon (nom, image, types, stats).
+ * - Permet de naviguer vers la page d'édition du Pokémon.
+ * - Permet de supprimer le Pokémon avec confirmation par modale.
+ * - Gère les erreurs de récupération ou de suppression.
+ *
+ * @component
+ */
+
 function PokemonDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -11,6 +23,13 @@ function PokemonDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false); // Pour afficher la modale
+
+
+  /**
+ * Récupère les données du Pokémon à partir de son ID.
+ * Gère également les erreurs de récupération.
+ */
+
 
   useEffect(() => {
     if (!id || id === "undefined") {
@@ -32,6 +51,11 @@ function PokemonDetail() {
 
     fetchData();
   }, [id]);
+
+  /**
+ * Supprime le Pokémon actuel via l'API.
+ * Redirige vers la page d'accueil en cas de succès.
+ */
 
   const handleDelete = async () => {
     try {
@@ -67,7 +91,7 @@ function PokemonDetail() {
         </button>
       </div>
 
-      {/* ✅ Modale personnalisée */}
+     {/* Modale de confirmation affichée avant suppression du Pokémon */}
       {showModal && (
         <div className="modal-overlay">
           <div className="modal">

@@ -1,6 +1,29 @@
 import { useState, useEffect } from "react";
 import "./index.css";
 
+
+/**
+ * Composant de barre de recherche et de filtres pour les Pokémon.
+ *
+ * - Permet de rechercher un Pokémon par nom.
+ * - Permet de filtrer les Pokémon par types (multi-sélection).
+ * - Offre des actions supplémentaires :
+ *    - Créer un nouveau Pokémon.
+ *    - Lancer le jeu.
+ *    - Afficher toutes les cartes retournées.
+ *
+ * @component
+ *
+ * @param {Object} props
+ * @param {function} props.onSearch - Callback pour transmettre la recherche et les filtres au parent.
+ * @param {function} props.onCreate - Callback pour ouvrir le formulaire de création.
+ * @param {function} props.onStartGame - Callback pour démarrer la partie.
+ * @param {function} props.onShowCards - Callback pour retourner toutes les cartes.
+ * @param {boolean} props.gameStarted - Indique si une partie est en cours (désactive certaines actions).
+ */
+
+
+
 function SearchBar({ onSearch, onCreate, onStartGame,onShowCards, gameStarted  }) {
   const [search, setSearch] = useState("");
   const [selectedTypes, setSelectedTypes] = useState([]);
@@ -14,16 +37,32 @@ function SearchBar({ onSearch, onCreate, onStartGame,onShowCards, gameStarted  }
     { label: "Glace", value: "Ice" }, { label: "Fée", value: "Fairy" }, { label: "Normal", value: "Normal" },
   ];
   
+
+  /**
+ * Met à jour les résultats de recherche en fonction du texte saisi ou des filtres appliqués.
+ */
+
   useEffect(() => {
     onSearch(search, selectedTypes);
   }, [search, selectedTypes, onSearch]);
   
+
+  /**
+ * Ajoute ou retire un type dans la sélection pour filtrer les Pokémon.
+ *
+ * @param {string} value - Le type sélectionné/désélectionné.
+ */
+
   const handleTypeToggle = (value) => {
     setSelectedTypes(prev =>
       prev.includes(value) ? prev.filter(type => type !== value) : [...prev, value]
     );
   };
   
+  /**
+ * Réinitialise la recherche et les filtres actifs.
+ */
+
   const resetFilters = () => {
     setSelectedTypes([]);
     setSearch("");
@@ -31,7 +70,8 @@ function SearchBar({ onSearch, onCreate, onStartGame,onShowCards, gameStarted  }
   
   return (
     <div className="filter-container">
-      <div className="search-input">
+     
+      <div className="search-input">  {/* Champ de recherche */}
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
           className="search-icon" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="11" cy="11" r="8"></circle>
@@ -50,7 +90,7 @@ function SearchBar({ onSearch, onCreate, onStartGame,onShowCards, gameStarted  }
         )}
       </div>
       
-      <div className="filter-header">
+      <div className="filter-header"> {/* En-tête de la section filtres */}
         <span>Filtrer par type</span>
         {selectedTypes.length > 0 && (
           <button className="reset-filters" onClick={resetFilters}>
@@ -59,7 +99,7 @@ function SearchBar({ onSearch, onCreate, onStartGame,onShowCards, gameStarted  }
         )}
       </div>
       
-      <div className="filter-options">
+      <div className="filter-options"> {/* Liste des filtres par type */}
         {POKEMON_TYPES.map((type) => (
           <div
             key={type.value}

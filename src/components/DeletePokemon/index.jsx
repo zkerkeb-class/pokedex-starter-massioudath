@@ -1,4 +1,14 @@
-import React from "react";
+import React from "react"; //Importer React depuis la bibliothèque react
+
+
+/**
+ * Composant affichant une modale de confirmation pour supprimer un Pokémon.
+ *
+ * @param {Object} props
+ * @param {Object} props.pokemon - Le Pokémon à supprimer (doit contenir `name.french` et `image`).
+ * @param {function} props.onConfirm - Fonction appelée pour confirmer la suppression.
+ * @param {function} props.onCancel - Fonction appelée pour annuler la suppression.
+ */ 
 
 function DeletePokemon({ pokemon, onConfirm, onCancel }) {
   if (!pokemon) return null;
